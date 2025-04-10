@@ -12,7 +12,7 @@ demo_requests = ['Scheduled Demo', 'Promotional Event', 'AI-Powered Virtual Assi
 payment_methods = ['Credit Card', 'PayPal', 'Bank Transfer', 'Debit Card']
 
 # Number of records to generate
-num_records = 2000
+num_records = 10000
 
 # Country to Faker locale mapping
 country_locale_map = {
@@ -46,9 +46,7 @@ for _ in range(num_records):
     Email=fake.email()
     job_requested = random.choice(job_types)  # Random job type requested
     Event_Participation= random.choice(['Yes', 'No'])
-    response_time= random.randint(1, 60),  # Response time in minutes
     page_accessed = random.choice(['/index.html', '/images/events.jpg', '/event.php', '/scheduledemo.php', '/prototype.php'])
-    sales_revenue = round(random.uniform(1000, 10000), 2)  # Random sales revenue
     payment_method = random.choice(payment_methods)  # Random payment method
     Resolution_status=random.choice(["Resolved", "Pending", "Failed"])
     satisfaction_rating = random.randint(1, 5)  # Random satisfaction rating (1 to 5)
@@ -57,6 +55,14 @@ for _ in range(num_records):
     locale = country_locale_map.get(country, 'en_US')
     localized_fake = Faker(locale)
     Phone_number = localized_fake.phone_number()
+
+    # Adjust sales revenue based on resolution status
+    if Resolution_status == 'Resolved':
+        sales_revenue = round(random.uniform(1000, 10000), 2)# Full amount for resolved
+    elif Resolution_status == 'Pending':
+      sales_revenue = round(random.uniform(1000, 10000) / 2, 2) # Half amount for pending
+    else:
+      sales_revenue = 0.00 # No amount for failed
 
     data.append({
         'Year': year,

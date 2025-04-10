@@ -1,2 +1,2 @@
 [server]
-maxMessageSize = 10000000  # Size in bytes (10 MB)
+maxMessageSize = 107374182400  # Size in bytes (100 GB)
