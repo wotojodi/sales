@@ -9,4 +9,4 @@ numpy
 streamlit-option-menu
 streamlit-authenticator
 fastapi
-request
+requests
