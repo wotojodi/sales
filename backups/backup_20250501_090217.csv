@@ -1,0 +1,121 @@
+Year,Country,Customer Name,Email,Phone Number,Job Requested,Event Participation,Page Accessed,Sales Revenue,Payment Method,Resolution Status,Satisfaction Rating
+2022,Canada,Dawn Gomez,tswanson@example.net,334.741.0145,Chatting with Sales Representative,Yes,/images/events.jpg,430.7759640785184,PayPal,Pending,6
+2025,Zimbabwe,Daniel Thomas,joshuasmith@example.net,+1-747-654-2173x2587,Chatting with Sales Representative,Yes,/images/events.jpg,314.8297980989861,Debit Card,Resolved,7
+2025,Canada,Abigail Johnson PhD,annedavid@example.com,(766) 154-3994 x176,Prototyping solutions,No,/images/events.jpg,415.8966691824282,PayPal,Resolved,3
+2024,Canada,Jon Scott,lisa67@example.org,+1 (414) 323-0609,Prototyping solutions,Yes,/prototype.php,411.37972535189175,PayPal,Failed,7
+2023,Canada,Tyler Bailey,uwright@example.net,185 720 0434,Prototyping solutions,No,/index.html,437.5691988563255,Bank Transfer,Failed,4
+2023,Portugal,Ann Foster,kristina84@example.com,250.397.7849x63118,Scheduled Demo,No,/scheduledemo.php,455.89874312265187,PayPal,Failed,4
+2022,Portugal,Jennifer Johnston,murrayzachary@example.com,001-611-370-0219x84687,AI-Powered Virtual Assistant,No,/event.php,219.07934379782245,PayPal,Pending,3
+2022,Russia,Linda Lucero,sarahsimon@example.net,+7 991 231 3855,Prototyping solutions,No,/prototype.php,485.663018546981,Debit Card,Pending,3
+2024,Canada,Jacob Liu,jonathanjohnson@example.net,409 116 9708,Chatting with Sales Representative,Yes,/images/events.jpg,485.27448464179577,Credit Card,Pending,3
+2022,Russia,Jason Lin,ericcampbell@example.org,84710369274,Chatting with Sales Representative,Yes,/index.html,181.10579615354135,Bank Transfer,Failed,3
+2023,Zambia,Joseph Harris,elizabethrobbins@example.org,(749)547-8140,Chatting with Sales Representative,Yes,/images/events.jpg,436.5659555326706,Credit Card,Resolved,7
+2025,Spain,Jill Love,amywalker@example.org,714-975-9297x3261,AI-Powered Virtual Assistant,No,/scheduledemo.php,401.473744776053,Bank Transfer,Failed,5
+2022,Zambia,Michelle Hale,katherinemclean@example.net,(891)419-1376,Software Assistance,Yes,/index.html,210.69978236787648,Credit Card,Failed,5
+2022,India,Clinton Nguyen,juliesmith@example.net,06330510061,Inquiring about Events,No,/images/events.jpg,434.99635311897026,Bank Transfer,Failed,6
+2024,Jamaica,Terry Chandler,keithhughes@example.org,719-231-9466x66416,Chatting with Sales Representative,No,/scheduledemo.php,107.74613852881205,Credit Card,Failed,5
+2022,France,Brian Rowe,haysjoseph@example.net,0638598512,AI-Powered Virtual Assistant,Yes,/prototype.php,342.4049224688827,Credit Card,Resolved,4
+2023,France,Riley Rowe,udavis@example.net,05 47 56 52 51,Prototyping solutions,Yes,/prototype.php,436.9393876973233,Credit Card,Resolved,4
+2024,China,Todd Vargas,vpotts@example.org,13087906728,Prototyping solutions,No,/images/events.jpg,146.49808292866715,Credit Card,Failed,6
+2022,Russia,Bradley Hodge,lawrencetasha@example.com,+7 603 184 6423,Scheduled Demo,Yes,/event.php,216.7639843127419,PayPal,Failed,7
+2022,Japan,Jeffrey Cooper,mho@example.org,080-4578-9903,AI-Powered Virtual Assistant,Yes,/event.php,362.073347566819,Debit Card,Resolved,5
+2022,Jamaica,Eddie Nguyen,swright@example.com,(673)810-4773x682,AI-Powered Virtual Assistant,Yes,/event.php,155.73443067605015,PayPal,Failed,7
+2025,UK,Katherine Fisher,dakotachavez@example.com,+44(0)131 4960014,Prototyping solutions,No,/scheduledemo.php,192.5401363519553,PayPal,Failed,6
+2025,Zimbabwe,Johnny Miller,jeffery45@example.com,(468)772-2725x8542,AI-Powered Virtual Assistant,No,/scheduledemo.php,398.7624278257285,PayPal,Pending,7
+2023,Netherlands,Monica Nguyen,carolyn28@example.com,+1-890-921-0955x217,Prototyping solutions,Yes,/scheduledemo.php,395.6204337366203,Bank Transfer,Failed,4
+2025,Portugal,Kimberly Smith,ydelgado@example.org,(604)846-8568x42799,Scheduled Demo,Yes,/scheduledemo.php,434.7270918996599,Bank Transfer,Pending,6
+2023,Brazil,Tabitha Hall,carlsonangel@example.net,81 8423-9195,Scheduled Demo,No,/index.html,392.4781566169793,PayPal,Pending,4
+2025,Portugal,James Murray,dominiquedalton@example.com,886-631-8680,Prototyping solutions,Yes,/images/events.jpg,407.38362565263793,Debit Card,Resolved,3
+2025,China,Sierra Hess,samuelsmith@example.net,18013663482,Scheduled Demo,No,/prototype.php,360.8374926050645,Debit Card,Pending,3
+2023,China,Chris Harrison,yfranklin@example.net,13779914568,Software Assistance,No,/index.html,181.77583029776704,Bank Transfer,Failed,7
+2022,China,Suzanne Suarez,joshua14@example.com,15779697818,Chatting with Sales Representative,Yes,/images/events.jpg,492.33064598319413,Credit Card,Failed,7
+2024,Germany,Vanessa Clark,cmanning@example.org,+49(0) 948950414,AI-Powered Virtual Assistant,Yes,/scheduledemo.php,123.34358646255299,Debit Card,Resolved,5
+2025,Australia,Anne Mitchell,dcollins@example.net,0441 892 482,Chatting with Sales Representative,No,/images/events.jpg,446.7129756054309,Debit Card,Pending,6
+2024,France,Kaitlyn Mendoza,wsellers@example.net,05 35 11 86 57,AI-Powered Virtual Assistant,Yes,/index.html,173.69269413115222,Debit Card,Resolved,6
+2023,Zimbabwe,Victor Silva,fhernandez@example.net,206.213.7408x751,Software Assistance,Yes,/event.php,210.15385951226526,Bank Transfer,Resolved,6
+2025,China,Adam Brown,lesliegallagher@example.net,13812732301,Prototyping solutions,No,/prototype.php,155.55852629414053,Credit Card,Resolved,5
+2023,Brazil,Cody Gonzalez,brooksmatthew@example.net,+55 (051) 0601 6406,AI-Powered Virtual Assistant,No,/images/events.jpg,221.98716704662576,Credit Card,Failed,6
+2025,Zimbabwe,Robert Martinez,jessica22@example.org,001-437-860-5656,Inquiring about Events,No,/prototype.php,278.6289502720067,Bank Transfer,Failed,6
+2022,China,Tara Lloyd,melanie97@example.com,18115992400,Chatting with Sales Representative,Yes,/index.html,110.86635652572166,Debit Card,Failed,4
+2024,Spain,Susan Rogers,michelle38@example.org,534-980-2473,Scheduled Demo,Yes,/event.php,389.90482346426825,PayPal,Failed,7
+2023,Jamaica,Kristie Wilson,leethomas@example.com,3032097046,Software Assistance,Yes,/event.php,159.13318791757024,Bank Transfer,Failed,4
+2025,France,Emily Morgan,taylor14@example.net,01 48 94 24 55,Software Assistance,Yes,/prototype.php,191.14664086023026,PayPal,Pending,6
+2024,Spain,Ryan Jackson,steven78@example.org,+1-731-555-5553x8061,AI-Powered Virtual Assistant,No,/images/events.jpg,375.67830400388664,Bank Transfer,Pending,3
+2025,Germany,Kristen Thompson,jeremy68@example.net,+49(0)0122 992919,AI-Powered Virtual Assistant,Yes,/index.html,421.4186402187682,Debit Card,Failed,7
+2025,Canada,Sean Ingram,sallyreed@example.com,242-291-1606,Prototyping solutions,Yes,/scheduledemo.php,131.2118461973253,Credit Card,Pending,7
+2024,Japan,Erica Conley,ileach@example.net,070-0254-9980,Software Assistance,Yes,/event.php,325.29475368814224,Credit Card,Failed,6
+2022,Russia,Jeffrey Turner,jkent@example.net,+7 352 557 07 24,Chatting with Sales Representative,Yes,/event.php,379.80933617522703,Bank Transfer,Pending,4
+2025,China,Beverly Ashley,amber08@example.org,18271754576,AI-Powered Virtual Assistant,Yes,/prototype.php,361.19846848532717,Debit Card,Pending,5
+2024,Spain,Sara Stevens,bradleyleah@example.com,980-219-2228x4376,Chatting with Sales Representative,Yes,/event.php,490.6629090385506,Credit Card,Resolved,4
+2024,Jamaica,Mark Maldonado,roberthayes@example.org,001-636-568-4958x16116,Chatting with Sales Representative,No,/index.html,169.26348549717716,Bank Transfer,Resolved,3
+2024,Australia,Catherine Wallace,henry25@example.net,0435.703.811,Inquiring about Events,Yes,/prototype.php,451.26933195233494,Bank Transfer,Failed,5
+2025,China,Ryan Winters,debbiebecker@example.org,13630369982,Chatting with Sales Representative,Yes,/index.html,489.2886624619142,Bank Transfer,Pending,3
+2023,Portugal,Dominic Jones,dukescott@example.net,+1-899-688-8454x340,Scheduled Demo,No,/event.php,103.23050563746135,Credit Card,Failed,3
+2024,Japan,Jacqueline Merritt,rjohnson@example.net,080-0114-4536,AI-Powered Virtual Assistant,No,/event.php,404.9915595773364,Credit Card,Resolved,7
+2025,Jamaica,Eric Alexander,gibsonmary@example.com,582-267-9706x0101,Software Assistance,Yes,/prototype.php,437.23769288506884,Debit Card,Resolved,4
+2025,Germany,Danielle Bass,gho@example.org,04111 20963,Prototyping solutions,Yes,/event.php,178.68416502631197,Credit Card,Failed,6
+2022,Australia,Lindsey Kidd,martin15@example.net,(07)-1108-5980,Scheduled Demo,No,/index.html,205.9512508513758,Credit Card,Resolved,5
+2022,Canada,Timothy Hall,fdillon@example.net,(698) 973-4014,Inquiring about Events,No,/event.php,477.26897379953994,PayPal,Resolved,4
+2022,Netherlands,Jeffery Cooper,jonsharp@example.com,517.775.5704x48520,Prototyping solutions,No,/index.html,341.4502735972487,Debit Card,Failed,6
+2024,China,Laura Golden,sheliajohnson@example.com,14579002678,Chatting with Sales Representative,Yes,/images/events.jpg,134.07632042556907,Bank Transfer,Failed,6
+2024,Zambia,Brenda Barrett,kristine16@example.org,583-786-5444,Inquiring about Events,No,/scheduledemo.php,365.2631983318885,Debit Card,Resolved,4
+2025,Portugal,Aaron Gray,randerson@example.com,(513)707-8022x8298,Scheduled Demo,No,/images/events.jpg,464.1674636368933,PayPal,Pending,6
+2024,Japan,Maria Warren,brandybrown@example.net,070-8338-9068,Prototyping solutions,No,/images/events.jpg,358.27642625140794,PayPal,Failed,6
+2025,Australia,Christopher Wolfe,pnicholson@example.net,(08) 6881 4361,Prototyping solutions,Yes,/index.html,300.73007140025334,Bank Transfer,Failed,3
+2023,Spain,Joanne Watson,johnroy@example.org,365-390-9413,Scheduled Demo,Yes,/index.html,349.92909942445976,PayPal,Resolved,4
+2025,Jamaica,Benjamin Jimenez,ibowman@example.net,+1-443-339-2707x742,AI-Powered Virtual Assistant,No,/prototype.php,226.31006360362449,Credit Card,Failed,3
+2025,USA,Jennifer Mitchell,nwalker@example.com,001-249-553-6954,AI-Powered Virtual Assistant,No,/index.html,482.68113069707294,Credit Card,Failed,7
+2023,Brazil,Joshua Barton,christinehendrix@example.net,+55 61 8708 8815,Prototyping solutions,Yes,/event.php,461.5571574697474,Debit Card,Resolved,4
+2023,Portugal,Samantha Grant,ksalinas@example.net,691-270-3307,Software Assistance,No,/images/events.jpg,301.88458303640505,Bank Transfer,Resolved,4
+2023,Australia,Jonathan Wilkinson,kgray@example.org,08-1144-5577,Prototyping solutions,No,/prototype.php,211.77618538913163,PayPal,Failed,6
+2023,Jamaica,Stacey Acevedo,nancyclements@example.com,+1-618-694-0828x889,Inquiring about Events,Yes,/prototype.php,445.4591578983807,PayPal,Pending,5
+2022,Japan,John Brooks,pacealice@example.org,40-7314-6115,Chatting with Sales Representative,Yes,/images/events.jpg,441.95569887722905,Credit Card,Pending,6
+2023,Russia,Elizabeth Brooks,gerald31@example.com,81991595901,Inquiring about Events,No,/scheduledemo.php,218.27013661331648,Bank Transfer,Pending,5
+2025,Zimbabwe,Edward Coleman,yhernandez@example.net,+1-428-485-2739x24848,AI-Powered Virtual Assistant,No,/prototype.php,315.2810438836545,PayPal,Failed,7
+2025,France,Jeffery Williams,vanderson@example.com,0563267595,Scheduled Demo,No,/images/events.jpg,481.73266878142914,PayPal,Failed,4
+2022,India,Kelly Ferguson,cannonkevin@example.org,+916541715014,Chatting with Sales Representative,Yes,/images/events.jpg,214.05676494749022,PayPal,Pending,3
+2024,Russia,Jennifer Johnson,jwilson@example.com,+7 (004) 050-6469,Software Assistance,No,/images/events.jpg,385.18514503986756,Debit Card,Failed,4
+2025,Jamaica,Briana Mcguire,ricky07@example.org,+1-305-679-2798x03839,AI-Powered Virtual Assistant,No,/prototype.php,283.6691683631374,Credit Card,Pending,6
+2023,Canada,Hector Mendoza,ashley15@example.com,777.036.2038,Scheduled Demo,Yes,/event.php,303.05483506469545,Debit Card,Resolved,5
+2025,Zambia,Laura Hanson,ehester@example.net,+1-495-747-3021x7762,AI-Powered Virtual Assistant,No,/index.html,390.1583120452512,Credit Card,Resolved,4
+2022,Brazil,Laura Zimmerman,angela20@example.org,(081) 9930-9076,Scheduled Demo,No,/index.html,148.6316447032602,PayPal,Resolved,7
+2023,USA,Linda Ferguson,dakota90@example.net,9157533855,Chatting with Sales Representative,No,/images/events.jpg,300.5973724755527,Credit Card,Pending,3
+2023,Zimbabwe,Joseph Gallegos,marshallvanessa@example.com,001-363-803-5794,Prototyping solutions,No,/images/events.jpg,306.7250773518996,Credit Card,Failed,7
+2024,Germany,Jessica Kim,clarksean@example.com,+49(0)3773917895,Software Assistance,No,/scheduledemo.php,290.0276703666784,Credit Card,Pending,7
+2024,India,Heather Briggs,john84@example.org,0307830737,Prototyping solutions,No,/event.php,235.9251513900642,Credit Card,Pending,5
+2022,Canada,Pamela Barr,richard79@example.com,1 (189) 502-6127,Scheduled Demo,No,/scheduledemo.php,104.91567483260202,PayPal,Pending,4
+2024,France,Harry Vargas,gregory95@example.org,+33 (0)1 78 29 32 17,Scheduled Demo,Yes,/index.html,498.8010745234095,PayPal,Resolved,3
+2024,Germany,Wendy Henry,ymeyer@example.net,08287 849517,AI-Powered Virtual Assistant,Yes,/event.php,461.30368053368016,PayPal,Pending,3
+2022,UK,Joshua Collins,erica73@example.net,02074960509,Scheduled Demo,Yes,/images/events.jpg,144.16757319237382,Bank Transfer,Pending,5
+2022,Spain,Angel Stevens,hullpatrick@example.org,279.307.7021,Software Assistance,No,/event.php,275.0457958149119,PayPal,Resolved,6
+2025,USA,James Hart,andrew27@example.com,001-488-932-2114x93639,Chatting with Sales Representative,Yes,/scheduledemo.php,212.64137582030537,Bank Transfer,Pending,5
+2022,Brazil,David Bradley,josephrodriguez@example.com,+55 81 3016-7057,Scheduled Demo,Yes,/event.php,205.69316550855353,Bank Transfer,Pending,5
+2025,Netherlands,Vincent Campbell,lauravaldez@example.com,001-755-249-8544,Chatting with Sales Representative,No,/images/events.jpg,292.86735802610974,Credit Card,Pending,4
+2023,Australia,Daniel Gomez,austin56@example.org,07-5522-4582,Prototyping solutions,Yes,/event.php,173.38971311608742,Bank Transfer,Pending,4
+2025,France,Anthony Love,swilson@example.net,+33 5 17 17 75 26,Scheduled Demo,No,/index.html,298.2706936478737,Debit Card,Failed,5
+2022,Spain,Michael Fields,shannon75@example.com,+1-818-609-0586x4447,Scheduled Demo,Yes,/scheduledemo.php,193.47342343036365,PayPal,Failed,6
+2022,France,Stephanie Bennett,sophia17@example.org,04 49 49 13 44,Prototyping solutions,No,/prototype.php,466.5818962313753,Debit Card,Pending,6
+2022,Zimbabwe,Joseph Stanley,mmartinez@example.net,855.854.8194x24951,Software Assistance,Yes,/event.php,262.37438571756377,Bank Transfer,Pending,6
+2024,France,Audrey Schneider,kathleennguyen@example.org,+33 1 53 29 25 06,Chatting with Sales Representative,Yes,/scheduledemo.php,159.89157034847344,Bank Transfer,Resolved,3
+2023,Canada,Christopher Dawson,wle@example.net,(460) 125-2040,AI-Powered Virtual Assistant,Yes,/event.php,329.11927302815445,Credit Card,Pending,5
+2022,Brazil,Tracy Oliver,javierarmstrong@example.net,+55 71 2307-5489,Chatting with Sales Representative,No,/index.html,471.9261045915485,Debit Card,Failed,4
+2025,Brazil,Patrick Smith,anthonyhopkins@example.com,0500-096-2213,AI-Powered Virtual Assistant,No,/event.php,268.1952103494365,Debit Card,Failed,3
+2023,Portugal,James Johnson,larsenchristine@example.org,340.691.5293x4157,Software Assistance,No,/scheduledemo.php,137.1015316791619,Bank Transfer,Failed,7
+2025,France,Michele Marshall,keithgomez@example.com,+33 (0)1 55 78 64 90,Inquiring about Events,No,/prototype.php,309.6116187294124,Debit Card,Pending,7
+2022,Portugal,Melody Lewis,nhurst@example.org,001-663-216-6245x9079,Software Assistance,No,/index.html,194.71481373136817,Debit Card,Failed,3
+2022,Portugal,Johnny Roth,michaelcameron@example.org,(334)702-1668x814,Scheduled Demo,Yes,/index.html,265.0745963708856,Bank Transfer,Failed,5
+2025,Zambia,Susan Schmidt,bowens@example.net,+1-413-376-6980x86204,AI-Powered Virtual Assistant,No,/scheduledemo.php,182.44501207704693,Debit Card,Pending,3
+2022,UK,Samantha Butler,richardsloan@example.net,+441144960436,Inquiring about Events,Yes,/event.php,411.0256261223851,PayPal,Resolved,3
+2022,China,Frank Scott,otaylor@example.com,18136550781,AI-Powered Virtual Assistant,No,/event.php,480.08087338599836,Credit Card,Resolved,3
+2022,Australia,Christian Aguilar DDS,ryanharris@example.net,(02)90124325,Prototyping solutions,Yes,/event.php,405.3213731573245,Credit Card,Pending,7
+2023,Japan,April Pena,phillipspaula@example.com,090-8953-0162,Inquiring about Events,No,/scheduledemo.php,205.7292558665262,Credit Card,Failed,5
+2025,Zambia,Kayla Lee,teresawest@example.org,705.705.1487,Chatting with Sales Representative,No,/images/events.jpg,470.3955123290789,Debit Card,Failed,5
+2023,Brazil,Aaron Johnson,mullinsmarissa@example.net,+55 21 4736 0627,Scheduled Demo,No,/scheduledemo.php,470.6688907530888,Bank Transfer,Resolved,7
+2025,Brazil,Dr. Brittany Farley MD,stevehall@example.net,+55 (071) 2949 8941,AI-Powered Virtual Assistant,No,/scheduledemo.php,272.8028163047918,PayPal,Resolved,4
+2023,China,Michelle Brown,charlesporter@example.org,13199547044,Prototyping solutions,Yes,/index.html,445.3054262365222,PayPal,Pending,6
+2025,France,James Phillips,joel49@example.org,+33 2 21 98 78 19,Chatting with Sales Representative,Yes,/images/events.jpg,310.6793081861706,Bank Transfer,Failed,4
+2024,UK,Lisa Norris,hansonandrea@example.net,(0116) 496 0334,Prototyping solutions,Yes,/scheduledemo.php,201.12877069512072,Bank Transfer,Resolved,7
+2022,Brazil,Christopher Gamble PhD,bellmaria@example.org,0500-901-1151,Prototyping solutions,No,/scheduledemo.php,165.1344102699524,Credit Card,Resolved,5
+2022,Brazil,Jeff Blackwell,donald39@example.com,(061) 0885 5021,Scheduled Demo,Yes,/event.php,431.3258596063319,Bank Transfer,Pending,3
+2024,USA,Jamie Hodge,edgarwinters@example.org,450.555.7668,AI-Powered Virtual Assistant,Yes,/images/events.jpg,147.57698535099038,Debit Card,Pending,3
+2023,Japan,Timothy Morton,james11@example.net,090-8542-9079,Scheduled Demo,Yes,/event.php,359.7282099138316,PayPal,Pending,4
