@@ -1,32 +1,60 @@
+import streamlit as st
+import time
+import json
 import os
 import pandas as pd
 import plotly.express as px
-import streamlit as st
 from io import BytesIO
-from datetime import datetime
 from streamlit_option_menu import option_menu
 from streamlit_autorefresh import st_autorefresh
 from Generating_data import create_record
-import time
-import json
 
-# ----------------- AUTHENTICATION CHECK -----------------
+# ----------------- CONFIG -----------------
+st.set_page_config(page_title="Sales and Marketing Dashboard", layout="wide", initial_sidebar_state="collapsed")
+CSV_PATH = 'AI_Solution_Dataset.csv'
 COOKIE_FILE = "session_cookie.json"
+SESSION_DURATION = 3600  # 1 hour
+VALID_USERNAME = "kwoto"
+VALID_PASSWORD = "abc"
 
-def is_authenticated():
+# ----------------- SESSION HANDLING -----------------
+def load_cookie():
     if os.path.exists(COOKIE_FILE):
         with open(COOKIE_FILE, "r") as f:
             cookie = json.load(f)
-            if cookie["expiry_time"] > time.time():
+            if cookie.get("expiry_time", 0) > time.time():
                 return True
     return False
 
-if not is_authenticated():
-    st.warning("Session expired or not logged in.")
-    st.switch_page("login.py")
+def save_cookie():
+    with open(COOKIE_FILE, "w") as f:
+        cookie = {
+            "authenticated": True,
+            "expiry_time": time.time() + SESSION_DURATION
+        }
+        json.dump(cookie, f)
 
-# ----------------- PAGE CONFIG -----------------
-st.set_page_config(page_title="Sales and Marketing Dashboard", layout="wide", initial_sidebar_state="collapsed")
+def clear_cookie():
+    if os.path.exists(COOKIE_FILE):
+        os.remove(COOKIE_FILE)
+
+# ----------------- LOGIN FORM -----------------
+if "authenticated" not in st.session_state:
+    st.session_state.authenticated = load_cookie()
+
+if not st.session_state.authenticated:
+    st.title("Login")
+    username = st.text_input("Username")
+    password = st.text_input("Password", type="password")
+    if st.button("Login"):
+        if username == VALID_USERNAME and password == VALID_PASSWORD:
+            st.session_state.authenticated = True
+            save_cookie()
+            st.success("Login successful! Refreshing...")
+            st.rerun()
+        else:
+            st.error("Invalid credentials.")
+    st.stop()
 
 # Auto-refresh every 2 seconds
 st_autorefresh(interval=2000, key="auto_refresh")
