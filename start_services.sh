@@ -9,4 +9,4 @@ sleep 2
 
 # Start the Streamlit dashboard
 echo "🚀 Launching Streamlit dashboard..."
-streamlit run api.py --server.enableCORS false --server.enableXsrfProtection false
+streamlit run pages/api.py --server.enableCORS false --server.enableXsrfProtection false
