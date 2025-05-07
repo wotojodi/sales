@@ -127,7 +127,7 @@ if selected == "Sales":
     total_loss = filtered_df['Loss'].sum()
     net_profit = total_profit - total_loss
     total_job_request = filtered_df["Product Type"].count()
-    total_countries=filtered_d["Country"].count()
+    total_countries=filtered_df["Country"].count()
     subcriptions=filtered_d["Subscription Type"].count()
     subcriptions_price=filtered_d["Subscription Price"].sum()
     demo = filtered_df[filtered_df["Demo Scheduled"] == 'Yes'].shape[0]
