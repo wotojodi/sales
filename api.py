@@ -212,7 +212,7 @@ if selected == "Effectiveness":
         kpis_row2 = st.columns(3)
         
         kpis_row1[0].metric("Avg. Product Rating", f"{avg_rating:.2f}")
-        kpis_row1[1].metric("Refund Rate", f"{refund_rate:.2%}")
+        kpis_row1[1].metric("Refund Amount", f"{refund_rate:.2f}")
         kpis_row1[2].metric("Avg. Response Time (days)", f"{avg_response_time:.2f}")
         
         kpis_row2[0].metric("Completed Products", value=completed_product)
