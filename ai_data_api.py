@@ -81,7 +81,7 @@ def create_record():
         product_rating = random.choice([1, 2])
         comments = fake.sentence(ext_word_list=["Extremely disappointed!", "Product failed to meet expectations."])
     payment_method = random.choice(['Credit Card', 'PayPal', 'Skrill', 'Airpay'])
-    assistance_type = random.choice(["AI Assistant", "Sales Representative"])
+    assistance_type = random.choice(["AI-powered virtual assistant", "Sales Representative"])
     # Add salesperson details if not AI-assisted
     if assistance_type == "Sales Representative":
         record.update({
