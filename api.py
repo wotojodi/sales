@@ -203,15 +203,21 @@ if selected == "Effectiveness":
     avg_rating = filtered_df['Product Rating'].mean()
     refund_rate = filtered_df['Refund Amount'].sum()
     avg_response_time = filtered_df['Response Time (days)'].mean()
-    requests_for_scheduled_demos = filtered_df[filtered_df["Product Status"] == "Completed"].shape[0]
-    requests_for_ai_assistant = filtered_df[filtered_df["Product Status"] == "Canceled"].shape[0]
-    requests_for_prototyping_solutions = filtered_df[filtered_df["Job Requested"] == "Failed].shape[0]
+    completed_product = filtered_df[filtered_df["Product Status"] == "Completed"].shape[0]
+    canceled_product = filtered_df[filtered_df["Product Status"] == "Canceled"].shape[0]
+    failed_product = filtered_df[filtered_df["Product Status"] == "Failed"].shape[0]
 
     with st.expander("📌 Effectiveness KPIs", expanded=True):
-        col1, col2, col3 = st.columns(3)
-        col1.metric("Avg. Product Rating", f"{avg_rating:.2f}")
-        col2.metric("Refund Rate", f"{refund_rate:.2%}")
-        col3.metric("Avg. Response Time (days)", f"{avg_response_time:.2f}")
+        kpis_row1 = st.columns(3)
+        kpis_row2 = st.columns(3)
+        
+        kpis_row1[0].metric("Avg. Product Rating", f"{avg_rating:.2f}")
+        kpis_row1[1].metric("Refund Rate", f"{refund_rate:.2%}")
+        kpis_row1[2].metric("Avg. Response Time (days)", f"{avg_response_time:.2f}")
+        
+        kpis_row2[0].metric("Completed Products", value=completed_product)
+        kpis_row2[1].metric("Canceled Products", value=canceled_product)
+        kpis_row2[2].metric("Failed Products", value=failed_product)
 
     with st.expander("🎯 Product Rating Distribution", expanded=False):
         rating_counts = filtered_df["Product Rating"].value_counts().sort_index()
