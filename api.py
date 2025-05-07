@@ -127,10 +127,19 @@ if selected == "Sales":
     total_loss = filtered_df['Loss'].sum()
     net_profit = total_profit - total_loss
     total_job_request = filtered_df["Product Type"].count()
+    total_countries=filtered_d["Country"].count()
+    subcriptions=filtered_d["Subscription Type"].count()
+    subcriptions_price=filtered_d["Subscription Price"].sum()
+    demo = filtered_df[filtered_df["Demo Scheduled"] == 'Yes'].shape[0]
+    total_promotion= filtered_df[filtered_df["Promotional Event Participation]== 'Yes'].shape[0]
+    AI-assistant = filtered_df[filtered_df["Assistance Type"] == 'AI-powered virtual assistant'].shape[0]
 
     with st.expander("📊 Key Performance Indicators", expanded=True):
         kpi_row1 = st.columns(3)
         kpi_row2 = st.columns(3)
+        kpi_row3 = st.columns(3)
+        kpi_row4 = st.columns(3)
+
 
         kpi_row1[0].metric(label="Total Sales Revenue", value=f"${total_sales_revenue:,.2f}")
         kpi_row1[1].metric(label="Total Profit", value=f"${total_profit:,.2f}")
@@ -139,6 +148,13 @@ if selected == "Sales":
         kpi_row2[0].metric(label="Net Profit", value=f"${net_profit:,.2f}")
         kpi_row2[1].metric(label="Total Job Request", value=total_job_request)
         kpi_row2[2].metric(label="Average Sales Amount", value=f"{average_sale_amount:,.2f}")
+        
+        kpi_row3[0].metric(label="Total number of Countries",value=total_countries)
+        kpi_row3[1].metric(label="Total number of Sbcriptions",value=subscriptions)
+        kpi_row3[2].metric(label="Overall subscription amount",value=subscriptions_price)
+
+         kpi_row4[0].metric(label="Total number of custmer who joined promotional events",value=total_promotion)
+         kpi_row4[1].metric(label="Request for AI-powered virtual assistant",value=AI-assistant)
 
     with st.expander("📈 Sales & Profit Visualizations", expanded=False):
         fig_col1, fig_col2, fig_col3 = st.columns(3)
@@ -185,8 +201,11 @@ if selected == "Effectiveness":
     st.subheader("Effectiveness Analysis")
 
     avg_rating = filtered_df['Product Rating'].mean()
-    refund_rate = filtered_df['Refund Amount'].sum() / filtered_df['Sales Amount'].sum()
+    refund_rate = filtered_df['Refund Amount'].sum()
     avg_response_time = filtered_df['Response Time (days)'].mean()
+    requests_for_scheduled_demos = filtered_df[filtered_df["Product Status"] == "Completed"].shape[0]
+    requests_for_ai_assistant = filtered_df[filtered_df["Product Status"] == "Canceled"].shape[0]
+    requests_for_prototyping_solutions = filtered_df[filtered_df["Job Requested"] == "Failed].shape[0]
 
     with st.expander("📌 Effectiveness KPIs", expanded=True):
         col1, col2, col3 = st.columns(3)
