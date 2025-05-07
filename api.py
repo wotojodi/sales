@@ -132,7 +132,7 @@ if selected == "Sales":
     subcriptions_price=filtered_d["Subscription Price"].sum()
     demo = filtered_df[filtered_df["Demo Scheduled"] == 'Yes'].shape[0]
     total_promotion= filtered_df[filtered_df["Promotional Event Participation"]== 'Yes'].shape[0]
-    AI-assistant = filtered_df[filtered_df["Assistance Type"] == 'AI-powered virtual assistant'].shape[0]
+    AI_assistant = filtered_df[filtered_df["Assistance Type"] == 'AI-powered virtual assistant'].shape[0]
 
     with st.expander("📊 Key Performance Indicators", expanded=True):
         kpi_row1 = st.columns(3)
