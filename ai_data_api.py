@@ -9,15 +9,39 @@ import threading
 import time
 import os
 
+import phonenumbers
+from phonenumbers import geocoder, carrier
+from phonenumbers.phonenumberutil import region_code_for_country_code
+
+
 app = FastAPI()
 fake = Faker()
 
 file_path = "AI_Solution_Dataset.csv"
 lock = threading.Lock()
 
-# Function to generate a phone number based on country
+# Function to get a properly formatted international phone number
 def generate_phone_number(country):
-    return fake.phone_number().split('x')[0]
+    try:
+        # Generate a fake phone number
+        number = fake.phone_number()
+        
+        # Try to get the country code for the given country
+        country_code = phonenumbers.country_code_for_region(fake.country_code(representation="alpha-2"))
+
+        # Parse and reformat the number with the country code
+        parsed_number = phonenumbers.parse(number, None)
+        
+        # If number is valid, format in E.164 (e.g., +14155552671)
+        if phonenumbers.is_valid_number(parsed_number):
+            return phonenumbers.format_number(parsed_number, phonenumbers.PhoneNumberFormat.E164)
+        else:
+            # Fallback: just add country code manually and strip invalid characters
+            clean_number = ''.join(filter(str.isdigit, number))
+            return f"+{country_code}{clean_number[-10:]}"  # Use last 10 digits assuming it's a mobile number
+    except:
+        # Fallback if formatting fails
+        return f"+{random.randint(1, 199)}{random.randint(1000000000, 9999999999)}"
 
 # Function to create a single record
 def create_record():
