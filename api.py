@@ -7,7 +7,7 @@ import plotly.express as px
 from io import BytesIO
 from streamlit_option_menu import option_menu
 from streamlit_autorefresh import st_autorefresh
-from Generating_data import create_record
+#from Generating_data import create_record
 
 # ----------------- CONFIG -----------------
 st.set_page_config(page_title="Sales and Marketing Dashboard", layout="wide", initial_sidebar_state="collapsed")
@@ -63,13 +63,13 @@ st_autorefresh(interval=2000, key="auto_refresh")
 CSV_PATH = 'AI_Solution_Dataset.csv'
 
 # ----------------- APPEND NEW DATA -----------------
-if os.path.exists(CSV_PATH):
-    new_record = create_record()
-    new_df = pd.DataFrame([new_record])
-    new_df.to_csv(CSV_PATH, mode='a', header=False, index=False)
-else:
-    initial_df = pd.DataFrame([create_record()])
-    initial_df.to_csv(CSV_PATH, index=False)
+#if os.path.exists(CSV_PATH):
+    #new_record = create_record()
+    #new_df = pd.DataFrame([new_record])
+    #new_df.to_csv(CSV_PATH, mode='a', header=False, index=False)
+#else:
+    #initial_df = pd.DataFrame([create_record()])
+    #initial_df.to_csv(CSV_PATH, index=False)
 
 # ----------------- READ UPDATED DATA -----------------
 df = pd.read_csv(CSV_PATH, on_bad_lines="skip")
