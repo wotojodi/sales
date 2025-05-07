@@ -85,8 +85,8 @@ def create_record():
     # Add salesperson details if not AI-assisted
     Sales_Rep_Name=fake.name() if assistance_type == "Sales Representative" else "N/A",
     Sales_Rep_Email= fake.email() if assistance_type == "Sales Representative" else "N/A",
-    Sales_Rep_Phone =fake.phone_number() if assistance_type == "Sales Representative" else "N/A",
-    Sales_Rep_ID =fake.uuid4() if assistance_type == "Sales Representative" else "N/A"
+    Sales_Rep_Phone = fake.phone_number() if assistance_type == "Sales Representative" else "N/A",
+    Sales_Rep_ID = fake.uuid4() if assistance_type == "Sales Representative" else "N/A"
     
     return {
         "Customer ID": customer_id, "Customer Name": customer_name, "Email": email, "Phone": phone, "Country": country,
