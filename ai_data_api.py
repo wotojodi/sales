@@ -81,13 +81,31 @@ def create_record():
         product_rating = random.choice([1, 2])
         comments = fake.sentence(ext_word_list=["Extremely disappointed!", "Product failed to meet expectations."])
     payment_method = random.choice(['Credit Card', 'PayPal', 'Skrill', 'Airpay'])
+    assistance_type = random.choice(["AI Assistant", "Sales Representative"])
+    # Add salesperson details if not AI-assisted
+    if assistance_type == "Sales Representative":
+        record.update({
+            "Sales Rep Name": fake.name(),
+            "Sales Rep Email": fake.email(),
+            "Sales Rep Phone": fake.phone_number(),
+            "Sales Rep ID": fake.uuid4()
+        })
+    else:
+        # Fill with N/A if assisted by AI
+        record.update({
+            "Sales Rep Name": "N/A",
+            "Sales Rep Email": "N/A",
+            "Sales Rep Phone": "N/A",
+            "Sales Rep ID": "N/A"
+        })
+    
     return {
         "Customer ID": customer_id, "Customer Name": customer_name, "Email": email, "Phone": phone, "Country": country,
         "Gender": gender, "Age": age, "Company Name": Company_Name, "Customer Type": customer_type,
         "Subscription Type": subscription_type, "Benefits of Membership Type": Benefits_of_Membership_Type,
         "Subscription Duration": Subscription_Duration, "Subscription Date": Subscription_Date,
         "Subscription Price": price, "Product ID": Product_ID, "Product Type": product_type,
-        "Inquries": Inquiry_Type, "Cost of Product": cost_of_service, "Sales Amount": price_of_service,
+        "Inquries": Inquiry_Type, "Assistance Type": assistance_type, "Cost of Product": cost_of_service, "Sales Amount": price_of_service,
         "Sales Date ": sales_date, "Sales Time": sales_time, "Payment Method": payment_method,
         "Demo Scheduled": demo_scheduled, "Promotional Event Participation": Promotional_Event_Participation,
         "Promotional Event": Type_of_Promotional_Event, "Response Time (days)": response_time,
