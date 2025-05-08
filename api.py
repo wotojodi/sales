@@ -352,4 +352,3 @@ if selected == "Logout":
         os.remove(COOKIE_FILE)
     st.session_state.authenticated = False
     st.success("Logged out.")
-    st.switch_page("login.py")
