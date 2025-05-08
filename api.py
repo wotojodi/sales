@@ -67,41 +67,22 @@ if not st.session_state.authenticated:
 # Auto-refresh every 2 seconds
 st_autorefresh(interval=2000, key="auto_refresh")
 
-# ----------------- APPEND NEW DATA -----------------
-# Use session state to avoid multiple appending within same refresh
-if "last_append_time" not in st.session_state:
-    st.session_state.last_append_time = 0
+# ----------------- FILE PATH -----------------
+CSV_PATH = 'AI_Solution_Dataset.csv'
 
-current_time = time.time()
-# Append new data at most once every 1.5 seconds
-if current_time - st.session_state.last_append_time > 1.5:
-    if os.path.exists(CSV_PATH):
-        # Append new record to the CSV file
-        try:
-            new_record = create_record()
-            new_df = pd.DataFrame([new_record])
-            new_df.to_csv(CSV_PATH, mode='a', header=False, index=False)
-            st.session_state.last_append_time = current_time
-        except Exception as e:
-            st.error(f"Error appending data: {e}")
-    else:
-        # If the file doesn't exist, initialize with one record and header
-        try:
-            initial_df = pd.DataFrame([create_record()])
-            initial_df.to_csv(CSV_PATH, index=False)
-            st.session_state.last_append_time = current_time
-        except Exception as e:
-            st.error(f"Error creating initial data file: {e}")
+# ----------------- APPEND NEW DATA -----------------
+if os.path.exists(CSV_PATH):
+    new_record = create_record()
+    new_df = pd.DataFrame([new_record])
+    new_df.to_csv(CSV_PATH, mode='a', header=False, index=False)
+else:
+    # If the file doesn't exist, initialize with one record and header
+    initial_df = pd.DataFrame([create_record()])
+    initial_df.to_csv(CSV_PATH, index=False)
 
 # ----------------- READ UPDATED DATA -----------------
-try:
-    df = pd.read_csv(CSV_PATH, on_bad_lines="skip")
-except FileNotFoundError:
-    st.warning("No data available yet. Please wait for data to be generated.")
-    df = pd.DataFrame()
-except Exception as e:
-    st.error(f"Error reading data file: {e}")
-    df = pd.DataFrame()
+df = pd.read_csv(CSV_PATH, on_bad_lines="skip")
+
 
 # ----------------- NAVIGATION MENU -----------------
 selected = option_menu(
