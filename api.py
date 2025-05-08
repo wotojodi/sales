@@ -56,12 +56,14 @@ if not st.session_state.authenticated:
             st.error("Invalid credentials.")
     st.stop()
 
-# Auto-refresh every 2 seconds
-st_autorefresh(interval=2000, key="auto_refresh")
 
 # ----------------- FILE PATH -----------------
 CSV_PATH = 'AI_Solution_Dataset.csv'
+@st.cache_data(ttl=5)  # Refreshes every 5 seconds
+def load_data():
+    return pd.read_csv(CSV_PATH, on_bad_lines="skip")
 
+df = load_data()
 # ----------------- APPEND NEW DATA -----------------
 if os.path.exists(CSV_PATH):
     new_record = create_record()
