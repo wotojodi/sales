@@ -65,34 +65,24 @@ if not st.session_state.authenticated:
     st.stop()
 
 # ----------------- AUTO-REFRESH -----------------
-# Refresh the page every 2 seconds
-count = st_autorefresh(interval=2000, key="data_refresh", limit=None)
+# Auto-refresh every 2 seconds
+st_autorefresh(interval=2000, key="auto_refresh")
 
-# Append only one record per refresh cycle
-if "last_count" not in st.session_state:
-    st.session_state.last_count = -1
+# ----------------- FILE PATH -----------------
+CSV_PATH = 'AI_Solution_Dataset.csv'
 
-if count != st.session_state.last_count:
-    try:
-        new_record = create_record()
-        new_df = pd.DataFrame([new_record])
-        if os.path.exists(CSV_PATH):
-            new_df.to_csv(CSV_PATH, mode='a', header=False, index=False)
-        else:
-            new_df.to_csv(CSV_PATH, index=False)
-    except Exception as e:
-        st.error(f"Error appending data record: {e}")
-        st.session_state.last_count = count
+# ----------------- APPEND NEW DATA -----------------
+if os.path.exists(CSV_PATH):
+    new_record = create_record()
+    new_df = pd.DataFrame([new_record])
+    new_df.to_csv(CSV_PATH, mode='a', header=False, index=False)
+else:
+    # If the file doesn't exist, initialize with one record and header
+    initial_df = pd.DataFrame([create_record()])
+    initial_df.to_csv(CSV_PATH, index=False)
 
-# ----------------- READ DATA -----------------
-try:
-    df = pd.read_csv(CSV_PATH, on_bad_lines="skip")
-    st.write("Data loaded successfully:", df.head())  # Debugging line
-except FileNotFoundError:
-    st.warning("No data yet. Please wait for data to be generated.")
-except Exception as e:
-    st.error(f"Error reading data file: {e}")
-     
+# ----------------- READ UPDATED DATA -----------------
+df = pd.read_csv(CSV_PATH, on_bad_lines="skip")
 
 # ----------------- NAVIGATION MENU -----------------
 selected = option_menu(
