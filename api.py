@@ -120,87 +120,156 @@ st.download_button(
 # ----------------- SALES TAB -----------------
 if selected == "Sales":
     st.subheader("Sales Overview")
-
-    total_sales_revenue = filtered_df['Sales Amount'].sum()
-    average_sale_amount = filtered_df['Sales Amount'].mean()
+    
+    total_customers= filtered_df["Customer ID"].count()
+    total_countries=filtered_df["Country"].count()
+    total_sales_revenue = filtered_df[filtered_df["Product Status"] == "Completed"]["Sales Amount"].sum()
     total_profit = filtered_df['Profit'].sum()
     total_loss = filtered_df['Loss'].sum()
-    net_profit = total_profit - total_loss
     total_job_request = filtered_df["Product Type"].count()
-    total_countries=filtered_df["Country"].count()
-    subscriptions=filtered_df["Subscription Type"].count()
-    subscriptions_price=filtered_df["Subscription Price"].sum()
+    subscribers = filtered_df[filtered_df["Subscription Type"].isin(["Premium", "Standard"])].shape[0]
+    subscriptions_price=filtered_df[filtered_df["Subscription Type"] != "Free"]["Subscription Price"].sum()
     demo = filtered_df[filtered_df["Demo Scheduled"] == 'Yes'].shape[0]
     total_promotion= filtered_df[filtered_df["Promotional Event Participation"]== 'Yes'].shape[0]
     AI_assistant = filtered_df[filtered_df["Assistance Type"] == 'AI-powered virtual assistant'].shape[0]
+    top_selling=filtered_df["Product Type"].value_counts().idxmax()
+    sales_rep=filtered_df[filtered_df["Assistance Type"] == 'Sales Representative'].shape[0]
 
     with st.expander("📊 Key Performance Indicators", expanded=True):
         kpi_row1 = st.columns(3)
         kpi_row2 = st.columns(3)
         kpi_row3 = st.columns(3)
         kpi_row4 = st.columns(3)
+        
 
-
-        kpi_row1[0].metric(label="Total Sales Revenue", value=f"${total_sales_revenue:,.2f}")
+       # Row 1 – Financial Outcomes (Most Important KPIs First)
+        kpi_row1[0].metric(label="Total Sales Revenue", value=f"${total_sales_revenue:,.2f}") 
         kpi_row1[1].metric(label="Total Profit", value=f"${total_profit:,.2f}")
         kpi_row1[2].metric(label="Total Loss", value=f"${total_loss:,.2f}")
 
-        kpi_row2[0].metric(label="Net Profit", value=f"${net_profit:,.2f}")
-        kpi_row2[1].metric(label="Total Job Request", value=total_job_request)
-        kpi_row2[2].metric(label="Average Sales Amount", value=f"{average_sale_amount:,.2f}")
-        
-        kpi_row3[0].metric(label="Total number of Countries",value=total_countries)
-        kpi_row3[1].metric(label="Total number of Sbcriptions",value=subscriptions)
-        kpi_row3[2].metric(label="Overall subscription amount",value=subscriptions_price)
+        # Row 2 – Sales Performance & Conversion
+        kpi_row2[0].metric(label="Top Selling Product", value=top_selling)
+        kpi_row2[1].metric(label="Total number of Subscriptions", value=subscribers)
+        kpi_row2[2].metric(label="Subscription Revenue", value=subscriptions_price)
 
-        kpi_row4[0].metric(label="Total number of custmer who joined promotional events",value=total_promotion)
-        kpi_row4[1].metric(label="Request for AI-powered virtual assistant",value=AI_assistant)
+        # Row 3 – Customer Reach & Engagement
+        kpi_row3[0].metric(label="Total Customers", value=total_customers)
+        kpi_row3[1].metric(label="Total number of Countries", value=total_countries)
+        kpi_row3[2].metric(label="Total Job Request", value=total_job_request)
 
-    with st.expander("📈 Sales & Profit Visualizations", expanded=False):
+        # Row 4 – Support & Sales Channels
+        kpi_row4[0].metric(label="Request for Sales Rep", value=sales_rep)
+        kpi_row4[1].metric(label="Request for AI-powered virtual assistant", value=AI_assistant)
+        kpi_row4[2].metric(label="Promo Event Participation", value=total_promotion)
+
+    # Section 1: Overall Financial Performance
+    with st.expander("💰 Financial Performance", expanded=False):
         fig_col1, fig_col2, fig_col3 = st.columns(3)
 
         with fig_col1:
-            fig1 = px.bar(filtered_df, x=filtered_df['Sales Date '].astype(str).str[:4], y='Sales Amount', title='Sales over the Years')
-            st.plotly_chart(fig1, use_container_width=True)
+            completed_df = filtered_df[filtered_df['Product Status'] == 'Completed']
+            fig1 = px.bar(
+                completed_df, 
+                x=completed_df['Sales Date '].astype(str).str[:4], 
+                y='Sales Amount', 
+                title='Yearly Sales Revenue'
+            )
+            st.plotly_chart(fig1, use_container_width=True, dynamic=False)
 
         with fig_col2:
-            fig2 = px.choropleth(
-                filtered_df, locations='Country', locationmode='country names',
-                color='Sales Amount', title='Sales Revenue by Country',
-                color_continuous_scale=px.colors.sequential.Plasma
+            fig2 = px.bar(
+                completed_df, 
+                x='Product Type', 
+                y='Profit', 
+                title='Profit by Product Type'
             )
-            st.plotly_chart(fig2, use_container_width=True)
+            st.plotly_chart(fig2, use_container_width=True, dynamic=False)
 
         with fig_col3:
-            fig3 = px.bar(filtered_df, x='Product Type', y='Profit', title='Profit by Product')
-            st.plotly_chart(fig3, use_container_width=True)
+            fig3 = px.bar(
+                filtered_df, 
+                x='Product Type', 
+                y='Loss', 
+                title='Loss by Product Type'
+            )
+            st.plotly_chart(fig3, use_container_width=True, dynamic=False)
 
-    with st.expander("📉 Loss & Subscriptions Visualizations", expanded=False):
-        fig_col5, fig_col6, fig_col7 = st.columns(3)
+    # Section 2: Subscription Insights
+    with st.expander("📦 Subscription Insights", expanded=False):
+        fig_col4, fig_col5, fig_col6 = st.columns(3)
 
-        with fig_col5:
-            fig5 = px.bar(filtered_df, x='Product Type', y='Loss', title="Loss by Product")
-            st.plotly_chart(fig5, use_container_width=True)
-
-        with fig_col6:
-            fig6 = px.histogram(filtered_df, x='Customer Type', y='Sales Amount', title='Customer Type by Sales Amount')
-            st.plotly_chart(fig6, use_container_width=True)
-
-        with fig_col7:
+        with fig_col4:
             subscription_price_by_type = filtered_df.groupby('Subscription Type')['Subscription Price'].sum().reset_index()
-            fig7 = px.pie(
+            fig4 = px.pie(
                 subscription_price_by_type,
                 names='Subscription Type',
                 values='Subscription Price',
-                title='Total Subscription Price by Subscription Type'
+                title='Revenue by Subscription Type'
             )
-            st.plotly_chart(fig7, use_container_width=True)
+            st.plotly_chart(fig4, use_container_width=True, dynamic=False)
+
+        with fig_col5:
+            fig5 = px.histogram(filtered_df, 
+                x='Customer Type', 
+                y='Sales Amount', 
+                title='Customer Type vs Sales Amount'
+            )
+            st.plotly_chart(fig5, use_container_width=True, dynamic=False)
+
+        with fig_col6:
+            subscription_trend = filtered_df.copy()
+            subscription_trend['Year'] = pd.to_datetime(subscription_trend['Subscription Date']).dt.year
+            fig6 = px.bar(
+                subscription_trend.groupby(['Year', 'Subscription Type'])['Subscription Price'].sum().reset_index(),
+                x='Year', y='Subscription Price', color='Subscription Type',
+                title='Subscription Revenue Over Time'
+            )
+            st.plotly_chart(fig6, use_container_width=True, dynamic=False)
+
+    with st.expander("🌍 Regional Sales Overview", expanded=False):
+        # Layout for wide choropleth map
+        st.subheader("Sales Revenue by Country")
+        fig_map = px.choropleth(
+            completed_df,
+            locations='Country',
+            locationmode='country names',
+            color='Sales Amount',
+            title='Choropleth Map: Sales Revenue by Country',
+            color_continuous_scale=px.colors.sequential.Plasma
+        )
+        st.plotly_chart(fig_map, use_container_width=True, dynamic=False)
+
+        # Layout for horizontal bar chart showing number of customers by country
+        st.subheader("Customer Count by Country")
+        customer_counts = filtered_df['Country'].value_counts().reset_index()
+        customer_counts.columns = ['Country', 'Customer Count']
+
+        fig_bar = px.bar(
+            customer_counts,
+            x='Customer Count',
+            y='Country',
+            orientation='h',
+            title='Horizontal Bar: Customers by Country',
+            color='Customer Count',
+            color_continuous_scale='Teal'
+        )
+        fig_bar.update_layout(yaxis=dict(dtick=1))  # Avoid skipping countries
+        st.plotly_chart(fig_bar, use_container_width=True, dynamic=False)
 
 # ----------------- EFFECTIVENESS TAB -----------------
 if selected == "Effectiveness":
     st.subheader("Effectiveness Analysis")
+    # Calculate stars out of 5
+    def get_star_rating(rating):
+        full_stars = int(rating)
+        half_star = rating - full_stars >= 0.5
+        stars = "⭐" * full_stars
+        if half_star:
+            stars += "✬"
+        return stars
 
     avg_rating = filtered_df['Product Rating'].mean()
+    stars = get_star_rating(avg_rating)
     refund_rate = filtered_df['Refund Amount'].sum()
     avg_response_time = filtered_df['Response Time (days)'].mean()
     completed_product = filtered_df[filtered_df["Product Status"] == "Completed"].shape[0]
@@ -211,7 +280,7 @@ if selected == "Effectiveness":
         kpis_row1 = st.columns(3)
         kpis_row2 = st.columns(3)
         
-        kpis_row1[0].metric("Avg. Product Rating", f"{avg_rating:.2f}")
+        kpis_row1[0].metric("Avg. Product Rating", f"{avg_rating:.2f}  {stars}")
         kpis_row1[1].metric("Refund Amount", f"{refund_rate:.2f}")
         kpis_row1[2].metric("Avg. Response Time (days)", f"{avg_response_time:.2f}")
         
@@ -219,63 +288,72 @@ if selected == "Effectiveness":
         kpis_row2[1].metric("Canceled Products", value=canceled_product)
         kpis_row2[2].metric("Failed Products", value=failed_product)
 
-    with st.expander("🎯 Product Rating Distribution", expanded=False):
+    with st.expander("📊 Customer Satisfaction & Ratings", expanded=False):
         rating_counts = filtered_df["Product Rating"].value_counts().sort_index()
-        fig_rating = px.bar(x=rating_counts.index, y=rating_counts.values, title="Distribution of Product Ratings")
-        st.plotly_chart(fig_rating, use_container_width=True)
+        st.plotly_chart(px.bar(
+            x=rating_counts.index,
+            y=rating_counts.values,
+            title="📈 Distribution of Product Ratings"
+        ), use_container_width=True, dynamic=False)
 
-    with st.expander("🧠 Effectiveness by Product Status", expanded=False):
-        fig_status_rating = px.box(filtered_df, x="Product Status", y="Product Rating", title="Product Rating by Status")
-        st.plotly_chart(fig_status_rating, use_container_width=True)
-
-    with st.expander("📍Product Status vs Refund Amount", expanded=False):
-        fig_refund = px.bar(filtered_df, x="Product Status", y="Refund Amount", title="Refund Amount by Product Status")
-        st.plotly_chart(fig_refund, use_container_width=True)
-
-    with st.expander("📆 Response Time Effectiveness", expanded=False):
-        fig_response = px.histogram(filtered_df, x="Response Time (days)", nbins=10, title="Distribution of Customer Response Times")
-        st.plotly_chart(fig_response, use_container_width=True)
-
-    with st.expander("📦 Rating by Subscription Type", expanded=False):
-        fig_sub_rating = px.box(filtered_df, x="Subscription Type", y="Product Rating", title="Product Rating by Subscription Type")
-        st.plotly_chart(fig_sub_rating, use_container_width=True)
-
-    with st.expander("🌍 Avg Product Rating by Country", expanded=False):
-        avg_rating_country = filtered_df.groupby("Country")["Product Rating"].mean().reset_index()
-        fig_rating_country = px.bar(avg_rating_country.sort_values("Product Rating", ascending=False),
-        x="Country", y="Product Rating", title="Average Product Rating by Country")
-        st.plotly_chart(fig_rating_country, use_container_width=True)
-
-    with st.expander("📉 Low Rated Product Types", expanded=False):
-        low_rating_df = filtered_df[filtered_df["Product Rating"] <= 2]
-        low_rating_count = low_rating_df["Product Type"].value_counts().reset_index()
-        low_rating_count.columns = ["Product Type", "Low Rating Count"]
-        fig_low_rating = px.bar(low_rating_count, x="Product Type", y="Low Rating Count",
-        title="Low Ratings by Product Type")
-        st.plotly_chart(fig_low_rating, use_container_width=True)
+        st.plotly_chart(px.box(
+            filtered_df, x="Product Status", y="Product Rating",
+            title="📦 Product Rating by Completion Status"
+        ), use_container_width=True, dynamic=False)
+    with st.expander("🪙 Rating by Subscription Tier", expanded=False):
+        fig_sub_rating = px.box(
+            filtered_df, x="Subscription Type", y="Product Rating",
+            title="🔔 Rating by Subscription Type"
+        )
+        st.plotly_chart(fig_sub_rating, use_container_width=True, dynamic=False)
+    with st.expander("📆 Customer Response Time", expanded=False):
+        fig_response = px.histogram(
+            filtered_df, x="Response Time (days)", nbins=10,
+            title="⏱️ Distribution of Response Times"
+        )
+        st.plotly_chart(fig_response, use_container_width=True, dynamic=False)
+    with st.expander("💸 Refund Analysis by Status", expanded=False):
+        fig_refund = px.bar(
+            filtered_df, x="Product Status", y="Refund Amount",
+            title="Refund Amount by Product Status"
+        )
+        st.plotly_chart(fig_refund, use_container_width=True, dynamic=False)
+    
 
 # ----------------- ANALYSIS TAB -----------------
 if selected == "Analysis":
     st.subheader("Deeper Data Analysis")
 
-    with st.expander("📊 Sales by Customer Type and Subscription", expanded=True):
-        fig = px.box(filtered_df, x="Customer Type", y="Sales Amount", color="Subscription Type", title="Sales by Customer Type and Subscription")
-        st.plotly_chart(fig, use_container_width=True)
+    with st.expander("🧾 Aggregated Financial Overview by Country", expanded=True):
+        st.write("This table summarizes the total, average, and number of records for Sales Amount, Profit, and Loss per country.")
+        aggregated_data = (
+            filtered_df.groupby("Country")[["Sales Amount", "Profit", "Loss"]]
+            .agg(['sum', 'mean', 'count'])
+            .round(2)
+        )
+        st.dataframe(aggregated_data, use_container_width=True)
 
-    with st.expander("📉 Profit vs. Loss", expanded=False):
-        profit_loss = filtered_df.groupby("Country")[["Profit", "Loss"]].sum().reset_index()
-        fig = px.bar(profit_loss, x="Country", y=["Profit", "Loss"], barmode="group", title="Profit vs. Loss by Country")
-        st.plotly_chart(fig, use_container_width=True)
+    with st.expander("📌 Descriptive Statistics Summary", expanded=False):
+        st.write("A statistical overview of the key numerical metrics in the dataset.")
+        st.dataframe(filtered_df.describe().round(2), use_container_width=True)
 
-    with st.expander("🧮 Response Time vs Refund Amount", expanded=False):
-        fig = px.scatter(filtered_df, x="Response Time (days)", y="Refund Amount", color="Product Type", title="Response Time vs Refund Amount")
-        st.plotly_chart(fig, use_container_width=True)
+    with st.expander("📋 Summary by Customer Type and Subscription", expanded=False):
+        customer_summary = (
+            filtered_df.groupby(["Customer Type", "Subscription Type"])[["Sales Amount", "Profit", "Loss"]]
+            .agg(['sum', 'mean', 'count'])
+            .round(2)
+        )
+        st.write("Sales, Profit, and Loss statistics broken down by customer type and subscription type.")
+        st.dataframe(customer_summary, use_container_width=True)
 
-    with st.expander("📌 Statistical Summary", expanded=False):
-        st.dataframe(filtered_df.describe())
-
-    with st.expander("🧾 Aggregated Overview", expanded=False):
-        st.dataframe(filtered_df.groupby("Country")[["Sales Amount", "Profit", "Loss"]].agg(['sum', 'mean', 'count']))
+    with st.expander("🕒 Response Time & Refund Insight Table", expanded=False):
+        st.write("Examines how refund amounts relate to customer response times, broken down by product type.")
+        response_refund = (
+            filtered_df.groupby("Product Type")[["Response Time (days)", "Refund Amount"]]
+            .agg(['mean', 'max', 'count'])
+            .round(2)
+        )
+        st.dataframe(response_refund, use_container_width=True)
 
 # ----------------- LOGOUT -----------------
 if selected == "Logout":
