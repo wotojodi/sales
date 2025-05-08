@@ -194,6 +194,16 @@ if selected == "Sales":
                 title='Loss by Product Type'
             )
             st.plotly_chart(fig3, use_container_width=True, dynamic=False)
+        st.subheader("Sales Revenue by Country")
+        fig_map = px.choropleth(
+            completed_df,
+            locations='Country',
+            locationmode='country names',
+            color='Sales Amount',
+            title='Choropleth Map: Sales Revenue by Country',
+            color_continuous_scale=px.colors.sequential.Plasma
+        )
+        st.plotly_chart(fig_map, use_container_width=True, dynamic=False)
 
     # Section 2: Subscription Insights
     with st.expander("📦 Subscription Insights", expanded=False):
@@ -218,36 +228,6 @@ if selected == "Sales":
             st.plotly_chart(fig5, use_container_width=True, dynamic=False)
 
        
-
-    with st.expander("🌍 Regional Sales Overview", expanded=False):
-        # Layout for wide choropleth map
-        st.subheader("Sales Revenue by Country")
-        fig_map = px.choropleth(
-            completed_df,
-            locations='Country',
-            locationmode='country names',
-            color='Sales Amount',
-            title='Choropleth Map: Sales Revenue by Country',
-            color_continuous_scale=px.colors.sequential.Plasma
-        )
-        st.plotly_chart(fig_map, use_container_width=True, dynamic=False)
-
-        # Layout for horizontal bar chart showing number of customers by country
-        st.subheader("Customer Count by Country")
-        customer_counts = filtered_df['Country'].value_counts().reset_index()
-        customer_counts.columns = ['Country', 'Customer Count']
-
-        fig_bar = px.bar(
-            customer_counts,
-            x='Customer Count',
-            y='Country',
-            orientation='h',
-            title='Horizontal Bar: Customers by Country',
-            color='Customer Count',
-            color_continuous_scale='Teal'
-        )
-        fig_bar.update_layout(yaxis=dict(dtick=1))  # Avoid skipping countries
-        st.plotly_chart(fig_bar, use_container_width=True, dynamic=False)
 
 # ----------------- EFFECTIVENESS TAB -----------------
 if selected == "Effectiveness":
