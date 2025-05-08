@@ -72,7 +72,7 @@ else:
     initial_df.to_csv(CSV_PATH, index=False)
 
 # ----------------- READ UPDATED DATA -----------------
-df = pd.read_csv(CSV_PATH, on_bad_lines="skip")
+df = pd.read_csv(CSV_PATH)
 
 # ----------------- NAVIGATION MENU -----------------
 selected = option_menu(
