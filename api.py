@@ -70,6 +70,10 @@ st_autorefresh(interval=2000, key="auto_refresh")
 # ----------------- FILE PATH -----------------
 CSV_PATH = 'AI_Solution_Dataset.csv'
 
+# ----------------- READ UPDATED DATA -----------------
+def read_data():
+    return pd.read_csv(CSV_PATH, on_bad_lines="skip")
+
 # ----------------- APPEND NEW DATA -----------------
 if os.path.exists(CSV_PATH):
     new_record = create_record()
@@ -80,8 +84,9 @@ else:
     initial_df = pd.DataFrame([create_record()])
     initial_df.to_csv(CSV_PATH, index=False)
 
-# ----------------- READ UPDATED DATA -----------------
-df = pd.read_csv(CSV_PATH, on_bad_lines="skip")
+# Read the updated data after appending new records
+df = read_data()
+
 
 
 # ----------------- NAVIGATION MENU -----------------
