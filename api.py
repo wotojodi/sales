@@ -56,7 +56,25 @@ if not st.session_state.authenticated:
     st.stop()
 
 # ----------------- AUTO-REFRESH -----------------
-count = st_autorefresh(interval=2000, key="data_refresh")
+# Refreshes the page every 2 seconds
+count = st_autorefresh(interval=2000, key="data_refresh", limit=None)
+
+# Ensure only one record is appended per refresh
+if "last_count" not in st.session_state:
+    st.session_state.last_count = -1  # Set default to an invalid value
+
+# Append only if count has increased (i.e., it's a new refresh cycle)
+if count != st.session_state.last_count:
+    new_record = create_record()
+    new_df = pd.DataFrame([new_record])
+    
+    if os.path.exists(CSV_PATH):
+        new_df.to_csv(CSV_PATH, mode='a', header=False, index=False)
+    else:
+        new_df.to_csv(CSV_PATH, index=False)
+    
+    st.session_state.last_count = count
+
 
 # ----------------- APPEND NEW DATA -----------------
 # Only append one record per refresh using session count
