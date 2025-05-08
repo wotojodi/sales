@@ -82,7 +82,7 @@ if count != st.session_state.last_count:
             new_df.to_csv(CSV_PATH, index=False)
     except Exception as e:
         st.error(f"Error appending data record: {e}")
-    st.session_state.last_count = count
+        st.session_state.last_count = count
 
 # ----------------- READ DATA -----------------
 try:
