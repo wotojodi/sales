@@ -126,15 +126,15 @@ if selected == "Sales":
     # [Place all existing KPI and chart code here as-is]
 
 # ----------------- EFFECTIVENESS TAB -----------------
-elif selected == "Effectiveness":
+if selected == "Effectiveness":
     # [Keep your effectiveness metrics and visuals here]
 
 # ----------------- ANALYSIS TAB -----------------
-elif selected == "Analysis":
+if selected == "Analysis":
     # [Keep your analysis section here]
 
 # ----------------- LOGOUT -----------------
-elif selected == "Logout":
+if selected == "Logout":
     clear_cookie()
     st.session_state.authenticated = False
     st.success("Logged out.")
