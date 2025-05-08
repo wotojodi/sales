@@ -70,10 +70,11 @@ if count > 0 and "last_refresh" not in st.session_state:
 
 # ----------------- READ DATA -----------------
 @st.cache_data(show_spinner=False)
-def load_data(path):
+def load_data(path, version=None):
     return pd.read_csv(path, on_bad_lines="skip")
 
-df = load_data(CSV_PATH)
+df = load_data(CSV_PATH, version=count)  # Pass count to invalidate cache on each refresh
+
 
 # ----------------- NAVIGATION MENU -----------------
 selected = option_menu(
