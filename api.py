@@ -59,6 +59,8 @@ if not st.session_state.authenticated:
 
 # ----------------- FILE PATH -----------------
 CSV_PATH = 'AI_Solutions_Dataset.csv'
+# Auto-refresh the page every 10 seconds (adjust interval as needed)
+st_autorefresh(interval=10 * 1000, key="datarefresh")
 
 # ----------------- APPEND NEW DATA -----------------
 if os.path.exists(CSV_PATH):
@@ -70,11 +72,8 @@ else:
     initial_df.to_csv(CSV_PATH, index=False)
 
 # ----------------- READ UPDATED DATA -----------------
-@st.cache_data(ttl=5)  # Refreshes every 5 seconds
-def load_data():
-    return pd.read_csv(CSV_PATH, on_bad_lines="skip")
+df = pd.read_csv(CSV_PATH, on_bad_lines="skip")
 
-df = load_data()
 # ----------------- NAVIGATION MENU -----------------
 selected = option_menu(
     menu_title=None,
