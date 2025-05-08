@@ -59,6 +59,7 @@ if not st.session_state.authenticated:
         if username == VALID_USERNAME and password == VALID_PASSWORD:
             st.session_state.authenticated = True
             save_cookie()
+            st.experimental_rerun()  # Refresh the page to show the dashboard
         else:
             st.error("❌ Invalid credentials. Please try again.")
     st.stop()
@@ -67,21 +68,41 @@ if not st.session_state.authenticated:
 # Auto-refresh every 2 seconds
 st_autorefresh(interval=2000, key="auto_refresh")
 
-# ----------------- FILE PATH -----------------
-CSV_PATH = 'AI_Solution_Dataset.csv'
-
 # ----------------- APPEND NEW DATA -----------------
-if os.path.exists(CSV_PATH):
-    new_record = create_record()
-    new_df = pd.DataFrame([new_record])
-    new_df.to_csv(CSV_PATH, mode='a', header=False, index=False)
-else:
-    # If the file doesn't exist, initialize with one record and header
-    initial_df = pd.DataFrame([create_record()])
-    initial_df.to_csv(CSV_PATH, index=False)
+# Use session state to avoid multiple appending within same refresh
+if "last_append_time" not in st.session_state:
+    st.session_state.last_append_time = 0
+
+current_time = time.time()
+# Append new data at most once every 1.5 seconds
+if current_time - st.session_state.last_append_time > 1.5:
+    if os.path.exists(CSV_PATH):
+        # Append new record to the CSV file
+        try:
+            new_record = create_record()
+            new_df = pd.DataFrame([new_record])
+            new_df.to_csv(CSV_PATH, mode='a', header=False, index=False)
+            st.session_state.last_append_time = current_time
+        except Exception as e:
+            st.error(f"Error appending data: {e}")
+    else:
+        # If the file doesn't exist, initialize with one record and header
+        try:
+            initial_df = pd.DataFrame([create_record()])
+            initial_df.to_csv(CSV_PATH, index=False)
+            st.session_state.last_append_time = current_time
+        except Exception as e:
+            st.error(f"Error creating initial data file: {e}")
 
 # ----------------- READ UPDATED DATA -----------------
-df = pd.read_csv(CSV_PATH, on_bad_lines="skip")
+try:
+    df = pd.read_csv(CSV_PATH, on_bad_lines="skip")
+except FileNotFoundError:
+    st.warning("No data available yet. Please wait for data to be generated.")
+    df = pd.DataFrame()
+except Exception as e:
+    st.error(f"Error reading data file: {e}")
+    df = pd.DataFrame()
 
 # ----------------- NAVIGATION MENU -----------------
 selected = option_menu(
@@ -177,24 +198,30 @@ if not df.empty:
             fig_col1, fig_col2, fig_col3 = st.columns(3)
 
             with fig_col1:
-                fig1 = px.bar(
-                    completed_df,
-                    x=completed_df['Sales Date'].astype(str).str[:4],
-                    y='Sales Amount',
-                    title='Yearly Sales Revenue',
-                    labels={"x":"Year","Sales Amount":"Sales Amount $"}
-                )
-                st.plotly_chart(fig1, use_container_width=True, dynamic=False)
+                if not completed_df.empty:
+                    fig1 = px.bar(
+                        completed_df,
+                        x=completed_df['Sales Date'].astype(str).str[:4],
+                        y='Sales Amount',
+                        title='Yearly Sales Revenue',
+                        labels={"x":"Year","Sales Amount":"Sales Amount $"}
+                    )
+                    st.plotly_chart(fig1, use_container_width=True, dynamic=False)
+                else:
+                    st.write("No completed sales data for visualization.")
 
             with fig_col2:
-                fig2 = px.bar(
-                    completed_df,
-                    x='Product Type',
-                    y='Profit',
-                    title='Profit by Product Type',
-                    labels={"Profit":"Profit $"}
-                )
-                st.plotly_chart(fig2, use_container_width=True, dynamic=False)
+                if not completed_df.empty:
+                    fig2 = px.bar(
+                        completed_df,
+                        x='Product Type',
+                        y='Profit',
+                        title='Profit by Product Type',
+                        labels={"Profit":"Profit $"}
+                    )
+                    st.plotly_chart(fig2, use_container_width=True, dynamic=False)
+                else:
+                    st.write("No completed sales data for visualization.")
 
             with fig_col3:
                 fig3 = px.bar(
@@ -233,15 +260,18 @@ if not df.empty:
         # Section 3: Regional Sales Overview
         with st.expander("🌍 Regional Sales Overview", expanded=False):
             st.subheader("Sales Revenue by Country")
-            fig_map = px.choropleth(
-                completed_df,
-                locations='Country',
-                locationmode='country names',
-                color='Sales Amount',
-                title='Choropleth Map: Sales Revenue by Country',
-                color_continuous_scale=px.colors.sequential.Plasma
-            )
-            st.plotly_chart(fig_map, use_container_width=True, dynamic=False)
+            if not completed_df.empty:
+                fig_map = px.choropleth(
+                    completed_df,
+                    locations='Country',
+                    locationmode='country names',
+                    color='Sales Amount',
+                    title='Choropleth Map: Sales Revenue by Country',
+                    color_continuous_scale=px.colors.sequential.Plasma
+                )
+                st.plotly_chart(fig_map, use_container_width=True, dynamic=False)
+            else:
+                st.write("No completed sales data for choropleth map.")
 
             st.subheader("Customer Count by Country")
             customer_counts = filtered_df['Country'].value_counts().reset_index()
@@ -271,8 +301,8 @@ if not df.empty:
                 stars += "✬"
             return stars
 
-        avg_rating = filtered_df['Product Rating'].mean()
-        stars = get_star_rating(avg_rating) if not filtered_df.empty else ""
+        avg_rating = filtered_df['Product Rating'].mean() if not filtered_df.empty else 0.0
+        stars = get_star_rating(avg_rating) if avg_rating > 0 else ""
         refund_rate = filtered_df['Refund Amount'].sum()
         avg_response_time = filtered_df['Response Time (days)'].mean()
         completed_product = filtered_df[filtered_df["Product Status"] == "Completed"].shape[0]
@@ -380,3 +410,12 @@ if selected == "Logout":
     st.session_state.authenticated = False
     st.success("🚪 Logged out successfully. Please refresh the page.")
     st.stop()
+</content>
+</create_file>
+
+
+- Displays Sales, Effectiveness, and Analysis dashboards with Plotly charts.
+- Allows CSV export of filtered data.
+- Supports logout clearing session.
+
+Run with:
