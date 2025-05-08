@@ -78,6 +78,8 @@ def load_data():
     except Exception as e:
         st.error(f"Error loading data: {e}")
         return pd.DataFrame()  # Return empty DataFrame on error
+df = load_data()
+
 
 # ----------------- NAVIGATION MENU -----------------
 selected = option_menu(
