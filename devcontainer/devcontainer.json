@@ -18,20 +18,16 @@
   },
   "updateContentCommand": "[ -f packages.txt ] && sudo apt update && sudo apt upgrade -y && sudo xargs apt install -y <packages.txt; [ -f requirements.txt ] && pip3 install --user -r requirements.txt; echo '✅ Packages installed and Requirements met'",
   "postAttachCommand": {
-    "server": "start_services.sh"
+    "server": "api.py"
   },
   "portsAttributes": {
     "8000": {
       "label": "Main API (api.py)",
       "onAutoForward": "openPreview"
-    },
-    "8501": {
-      "label": "Streamlit / Dashboard",
-      "onAutoForward": "openPreview"
+    }
     }
   },
   "forwardPorts": [
-    8000,
-    8501
+    8000
   ]
 }
