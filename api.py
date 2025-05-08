@@ -59,7 +59,6 @@ if not st.session_state.authenticated:
         if username == VALID_USERNAME and password == VALID_PASSWORD:
             st.session_state.authenticated = True
             save_cookie()
-            st.experimental_rerun()  # Refresh the page to show the dashboard
         else:
             st.error("❌ Invalid credentials. Please try again.")
     st.stop()
