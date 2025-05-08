@@ -85,14 +85,14 @@ if count != st.session_state.last_count:
     st.session_state.last_count = count
 
 # ----------------- READ DATA -----------------
-try:
-    df = pd.read_csv(CSV_PATH, on_bad_lines="skip")
-except FileNotFoundError:
-    st.warning("No data yet. Please wait for data to be generated.")
-    df = pd.DataFrame()  # Empty df
-except Exception as e:
-    st.error(f"Error reading data file: {e}")
-    df = pd.DataFrame()
+     try:
+         df = pd.read_csv(CSV_PATH, on_bad_lines="skip")
+         st.write("Data loaded successfully:", df.head())  # Debugging line
+     except FileNotFoundError:
+         st.warning("No data yet. Please wait for data to be generated.")
+     except Exception as e:
+         st.error(f"Error reading data file: {e}")
+     
 
 # ----------------- NAVIGATION MENU -----------------
 selected = option_menu(
