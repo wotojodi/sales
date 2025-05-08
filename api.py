@@ -170,7 +170,7 @@ if selected == "Sales":
             completed_df = filtered_df[filtered_df['Product Status'] == 'Completed']
             fig1 = px.bar(
                 completed_df, 
-                x=completed_df['Sales Date'].astype(str).str[:4], 
+                x=completed_df['Sales Date '].astype(str).str[:4], 
                 y='Sales Amount', 
                 title='Yearly Sales Revenue'
             )
