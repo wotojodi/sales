@@ -103,7 +103,7 @@ if country_filter:
 if product_filter:
     filtered_df = filtered_df[filtered_df['Product Type'].isin(product_filter)]
 if year_filter:
-    filtered_df = filtered_df[filtered_df['Sales Date '].astype(str).str[:4].isin(year_filter)]
+    filtered_df = filtered_df[filtered_df['Sales Date'].astype(str).str[:4].isin(year_filter)]
 
 # ----------------- EXPORT CSV -----------------
 st.subheader("Export Filtered Data")
