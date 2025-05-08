@@ -150,11 +150,11 @@ if selected == "Sales":
         kpi_row2[2].metric(label="Average Sales Amount", value=f"{average_sale_amount:,.2f}")
         
         kpi_row3[0].metric(label="Total number of Countries",value=total_countries)
-        kpi_row3[1].metric(label="Total number of Sbcriptions",value=subscriptions)
-        kpi_row3[2].metric(label="Overall subscription amount",value=subscriptions_price)
+        kpi_row3[1].metric(label="Total number of Sbcriptions",value=subcriptions)
+        kpi_row3[2].metric(label="Overall subscription amount",value=subcriptions_price)
 
         kpi_row4[0].metric(label="Total number of custmer who joined promotional events",value=total_promotion)
-        kpi_row4[1].metric(label="Request for AI-powered virtual assistant",value=AI-assistant)
+        kpi_row4[1].metric(label="Request for AI-powered virtual assistant",value=AI_assistant)
 
     with st.expander("📈 Sales & Profit Visualizations", expanded=False):
         fig_col1, fig_col2, fig_col3 = st.columns(3)
