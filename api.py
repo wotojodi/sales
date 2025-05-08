@@ -217,15 +217,7 @@ if selected == "Sales":
             )
             st.plotly_chart(fig5, use_container_width=True, dynamic=False)
 
-        with fig_col6:
-            subscription_trend = filtered_df.copy()
-            subscription_trend['Year'] = pd.to_datetime(subscription_trend['Subscription Date']).dt.year
-            fig6 = px.bar(
-                subscription_trend.groupby(['Year', 'Subscription Type'])['Subscription Price'].sum().reset_index(),
-                x='Year', y='Subscription Price', color='Subscription Type',
-                title='Subscription Revenue Over Time'
-            )
-            st.plotly_chart(fig6, use_container_width=True, dynamic=False)
+       
 
     with st.expander("🌍 Regional Sales Overview", expanded=False):
         # Layout for wide choropleth map
