@@ -410,12 +410,3 @@ if selected == "Logout":
     st.session_state.authenticated = False
     st.success("🚪 Logged out successfully. Please refresh the page.")
     st.stop()
-</content>
-</create_file>
-
-
-- Displays Sales, Effectiveness, and Analysis dashboards with Plotly charts.
-- Allows CSV export of filtered data.
-- Supports logout clearing session.
-
-Run with:
