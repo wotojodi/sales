@@ -51,7 +51,6 @@ if not st.session_state.authenticated:
             st.session_state.authenticated = True
             save_cookie()
             st.success("Login successful! Refreshing...")
-            st.experimental_rerun()
         else:
             st.error("Invalid credentials.")
     st.stop()
