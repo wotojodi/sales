@@ -72,7 +72,12 @@ else:
     initial_df.to_csv(CSV_PATH, index=False)
 
 # ----------------- READ UPDATED DATA -----------------
-df = pd.read_csv(CSV_PATH)
+def load_data():
+    try:
+        return pd.read_csv(CSV_PATH, on_bad_lines="skip")
+    except Exception as e:
+        st.error(f"Error loading data: {e}")
+        return pd.DataFrame()  # Return empty DataFrame on error
 
 # ----------------- NAVIGATION MENU -----------------
 selected = option_menu(
