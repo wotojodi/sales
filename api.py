@@ -11,7 +11,7 @@ from Generating_data import create_record
 
 # ----------------- CONFIG -----------------
 st.set_page_config(page_title="Sales and Marketing Dashboard", layout="wide", initial_sidebar_state="collapsed")
-CSV_PATH = 'AI_Solutions_Dataset.csv'
+CSV_PATH = 'AI_Solution_Dataset.csv'
 COOKIE_FILE = "session_cookie.json"
 SESSION_DURATION = 3600  # 1 hour
 VALID_USERNAME = "kwoto"
@@ -56,11 +56,11 @@ if not st.session_state.authenticated:
             st.error("Invalid credentials.")
     st.stop()
 
+# Auto-refresh every 2 seconds
+st_autorefresh(interval=2000, key="auto_refresh")
 
 # ----------------- FILE PATH -----------------
-CSV_PATH = 'AI_Solutions_Dataset.csv'
-# Auto-refresh the page every 10 seconds (adjust interval as needed)
-st_autorefresh(interval=10 * 1000, key="datarefresh")
+CSV_PATH = 'AI_Solution_Dataset.csv'
 
 # ----------------- APPEND NEW DATA -----------------
 if os.path.exists(CSV_PATH):
@@ -193,16 +193,6 @@ if selected == "Sales":
                 title='Loss by Product Type'
             )
             st.plotly_chart(fig3, use_container_width=True, dynamic=False)
-        st.subheader("Sales Revenue by Country")
-        fig_map = px.choropleth(
-            completed_df,
-            locations='Country',
-            locationmode='country names',
-            color='Sales Amount',
-            title='Choropleth Map: Sales Revenue by Country',
-            color_continuous_scale=px.colors.sequential.Plasma
-        )
-        st.plotly_chart(fig_map, use_container_width=True, dynamic=False)
 
     # Section 2: Subscription Insights
     with st.expander("📦 Subscription Insights", expanded=False):
@@ -227,6 +217,35 @@ if selected == "Sales":
             st.plotly_chart(fig5, use_container_width=True, dynamic=False)
 
        
+    with st.expander("🌍 Regional Sales Overview", expanded=False):
+        # Layout for wide choropleth map
+        st.subheader("Sales Revenue by Country")
+        fig_map = px.choropleth(
+            completed_df,
+            locations='Country',
+            locationmode='country names',
+            color='Sales Amount',
+            title='Choropleth Map: Sales Revenue by Country',
+            color_continuous_scale=px.colors.sequential.Plasma
+        )
+        st.plotly_chart(fig_map, use_container_width=True, dynamic=False)
+
+        # Layout for horizontal bar chart showing number of customers by country
+        st.subheader("Customer Count by Country")
+        customer_counts = filtered_df['Country'].value_counts().reset_index()
+        customer_counts.columns = ['Country', 'Customer Count']
+
+        fig_bar = px.bar(
+            customer_counts,
+            x='Customer Count',
+            y='Country',
+            orientation='h',
+            title='Horizontal Bar: Customers by Country',
+            color='Customer Count',
+            color_continuous_scale='Teal'
+        )
+        fig_bar.update_layout(yaxis=dict(dtick=1))  # Avoid skipping countries
+        st.plotly_chart(fig_bar, use_container_width=True, dynamic=False)
 
 # ----------------- EFFECTIVENESS TAB -----------------
 if selected == "Effectiveness":

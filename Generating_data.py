@@ -161,7 +161,7 @@ df = df[[
 ]]
 
 # Save to CSV
-df.to_csv('AI_Solutions_Dataset.csv', index=False)
+df.to_csv('AI_Solution_Dataset.csv', index=False)
 
 # Display the first few records
 print(df.head())
