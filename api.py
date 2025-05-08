@@ -11,7 +11,7 @@ from Generating_data import create_record
 
 # ----------------- CONFIG -----------------
 st.set_page_config(page_title="Sales and Marketing Dashboard", layout="wide", initial_sidebar_state="collapsed")
-CSV_PATH = 'AI_Solution_Dataset.csv'
+CSV_PATH = 'AI_Solutions_Dataset.csv'
 COOKIE_FILE = "session_cookie.json"
 SESSION_DURATION = 3600  # 1 hour
 VALID_USERNAME = "kwoto"
