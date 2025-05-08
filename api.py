@@ -95,7 +95,7 @@ st.title("Sales and Marketing Dashboard")
 st.sidebar.header("Filter Options")
 country_filter = st.sidebar.multiselect("Select Country", options=df['Country'].unique())
 product_filter = st.sidebar.multiselect("Select Product", options=df['Product Type'].unique())
-year_filter = st.sidebar.multiselect("Select Year", options=df['Sales Date '].astype(str).str[:4].unique())
+year_filter = st.sidebar.multiselect("Select Year", options=df['Sales Date'].astype(str).str[:4].unique())
 
 filtered_df = df.copy()
 if country_filter:
