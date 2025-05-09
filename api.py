@@ -7,7 +7,7 @@ import plotly.express as px
 from io import BytesIO
 from streamlit_option_menu import option_menu
 from streamlit_autorefresh import st_autorefresh
-from Generating_data import create_record
+from Generating_data import create_record  # Ensure this function generates the required data
 
 # ----------------- CONFIG -----------------
 st.set_page_config(page_title="Sales and Marketing Dashboard", layout="wide", initial_sidebar_state="collapsed")
@@ -67,27 +67,24 @@ if not st.session_state.authenticated:
 # Auto-refresh every 2 seconds
 st_autorefresh(interval=2000, key="auto_refresh")
 
-# ----------------- FILE PATH -----------------
-CSV_PATH = 'AI_Solution_Dataset.csv'
-
 # ----------------- READ UPDATED DATA -----------------
 def read_data():
-    return pd.read_csv(CSV_PATH, on_bad_lines="skip")
+    if os.path.exists(CSV_PATH):
+        return pd.read_csv(CSV_PATH, on_bad_lines="skip")
+    else:
+        return pd.DataFrame()  # Return an empty DataFrame if the file doesn't exist
 
 # ----------------- APPEND NEW DATA -----------------
-if os.path.exists(CSV_PATH):
+def append_data():
     new_record = create_record()
     new_df = pd.DataFrame([new_record])
-    new_df.to_csv(CSV_PATH, mode='a', header=False, index=False)
-else:
-    # If the file doesn't exist, initialize with one record and header
-    initial_df = pd.DataFrame([create_record()])
-    initial_df.to_csv(CSV_PATH, index=False)
+    new_df.to_csv(CSV_PATH, mode='a', header=not os.path.exists(CSV_PATH), index=False)
 
-# Read the updated data after appending new records
+# On every app run (refresh), append new data
+append_data()
+
+# Read the updated data after appending new record
 df = read_data()
-
-
 
 # ----------------- NAVIGATION MENU -----------------
 selected = option_menu(
@@ -106,21 +103,23 @@ selected = option_menu(
 
 st.title("📊 Sales and Marketing Dashboard")
 
-if not df.empty:
-    # ----------------- FILTERS -----------------
-    st.sidebar.header("🔎 Filter Options")
-    country_filter = st.sidebar.multiselect("Select Country", options=sorted(df['Country'].dropna().unique()))
-    product_filter = st.sidebar.multiselect("Select Product", options=sorted(df['Product Type'].dropna().unique()))
-    year_filter = st.sidebar.multiselect("Select Year", options=sorted(df['Sales Date'].astype(str).str[:4].dropna().unique()))
+# ----------------- FILTERS -----------------
+st.sidebar.header("🔎 Filter Options")
+country_filter = st.sidebar.multiselect("Select Country", options=sorted(df['Country'].dropna().unique()) if not df.empty else [])
+product_filter = st.sidebar.multiselect("Select Product", options=sorted(df['Product Type'].dropna().unique()) if not df.empty else [])
+year_filter = st.sidebar.multiselect("Select Year", options=sorted(df['Sales Date'].astype(str).str[:4].dropna().unique()) if not df.empty else [])
 
-    filtered_df = df.copy()
-    if country_filter:
-        filtered_df = filtered_df[filtered_df['Country'].isin(country_filter)]
-    if product_filter:
-        filtered_df = filtered_df[filtered_df['Product Type'].isin(product_filter)]
-    if year_filter:
-        filtered_df = filtered_df[filtered_df['Sales Date'].astype(str).str[:4].isin(year_filter)]
+filtered_df = df.copy()
+if country_filter:
+    filtered_df = filtered_df[filtered_df['Country'].isin(country_filter)]
+if product_filter:
+    filtered_df = filtered_df[filtered_df['Product Type'].isin(product_filter)]
+if year_filter:
+    filtered_df = filtered_df[filtered_df['Sales Date'].astype(str).str[:4].isin(year_filter)]
 
+if filtered_df.empty:
+    st.warning("No data available to display yet. Please wait for data generation.")
+else:
     # ----------------- EXPORT CSV -----------------
     st.subheader("Export Filtered Data")
     towrite = BytesIO()
@@ -386,17 +385,10 @@ if not df.empty:
             st.write("Refund Amounts relative to Response Time by Product Type")
             st.dataframe(response_refund, use_container_width=True)
 
-else:
-    st.warning("No data available to display yet. Please wait for data generation.")
-    # Check for missing columns
-    missing_columns = [col for col in required_columns if col not in df.columns]
-    if missing_columns:
-        st.error(f"Missing columns in
-
-
 # ----------------- LOGOUT -----------------
 if selected == "Logout":
     clear_cookie()
     st.session_state.authenticated = False
     st.success("🚪 Logged out successfully. Please refresh the page.")
     st.stop()
+
