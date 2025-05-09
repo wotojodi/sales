@@ -193,6 +193,7 @@ if selected == "Sales":
                 y='Loss', 
                 title='Loss by Product Type'
             )
+        
             st.plotly_chart(fig3, use_container_width=True, dynamic=False)
         # Layout for wide choropleth map
         st.subheader("Sales Revenue by Country")
@@ -205,11 +206,6 @@ if selected == "Sales":
             color_continuous_scale=px.colors.sequential.Plasma
         )
         st.plotly_chart(fig_map, use_container_width=True, dynamic=False)
-
-        # Layout for horizontal bar chart showing number of customers by country
-        st.subheader("Customer Count by Country")
-        customer_counts = filtered_df['Country'].value_counts().reset_index()
-        customer_counts.columns = ['Country', 'Customer Count']
 
     # Section 2: Subscription Insights
     with st.expander("📦 Subscription Insights", expanded=False):
@@ -233,9 +229,10 @@ if selected == "Sales":
             )
             st.plotly_chart(fig5, use_container_width=True, dynamic=False)
 
+    
         
 
-        
+    
 # ----------------- EFFECTIVENESS TAB -----------------
 elif selected == "Effectiveness":
     st.subheader("Effectiveness Analysis")
