@@ -105,9 +105,9 @@ st.title("📊 Sales and Marketing Dashboard")
 
 # ----------------- FILTERS -----------------
 st.sidebar.header("🔎 Filter Options")
-country_filter = st.sidebar.multiselect("Select Country", options=sorted(df['Country'].dropna().unique()) if not df.empty else [])
-product_filter = st.sidebar.multiselect("Select Product", options=sorted(df['Product Type'].dropna().unique()) if not df.empty else [])
-year_filter = st.sidebar.multiselect("Select Year", options=sorted(df['Sales Date'].astype(str).str[:4].dropna().unique()) if not df.empty else [])
+country_filter = st.sidebar.multiselect("Select Country", options=sorted(df['Country'].dropna().unique()))
+product_filter = st.sidebar.multiselect("Select Product", options=sorted(df['Product Type'].dropna().unique()))
+year_filter = st.sidebar.multiselect("Select Year", options=sorted(df['Sales Date'].astype(str).str[:4].dropna().unique()))
 
 filtered_df = df.copy()
 if country_filter:
