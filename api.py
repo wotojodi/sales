@@ -72,7 +72,7 @@ def read_data():
     if os.path.exists(CSV_PATH):
         return pd.read_csv(CSV_PATH, on_bad_lines="skip")
     else:
-        return pd.DataFrame()  # Return an empty DataFrame if the file doesn't exist
+        return pd.DataFrame()
 
 # ----------------- APPEND NEW DATA -----------------
 def append_data():
@@ -82,9 +82,8 @@ def append_data():
 
 # On every app run (refresh), append new data
 append_data()
-
-# Read the updated data after appending new record
 df = read_data()
+
 
 # ----------------- NAVIGATION MENU -----------------
 selected = option_menu(
