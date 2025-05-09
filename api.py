@@ -388,6 +388,11 @@ if not df.empty:
 
 else:
     st.warning("No data available to display yet. Please wait for data generation.")
+    # Check for missing columns
+    missing_columns = [col for col in required_columns if col not in df.columns]
+    if missing_columns:
+        st.error(f"Missing columns in
+
 
 # ----------------- LOGOUT -----------------
 if selected == "Logout":
