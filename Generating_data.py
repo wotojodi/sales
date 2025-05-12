@@ -97,9 +97,9 @@ def create_record():
     payment_method = random.choice(['Credit Card', 'PayPal', 'Skrill', 'Airpay'])
     assistance_type = random.choice(["AI-powered virtual assistant", "Sales Representative"])
     # Add salesperson details if not AI-assisted
-    Sales_Rep_Name=fake.name() if assistance_type == "Sales Representative" else "N/A",
-    Sales_Rep_Email= fake.email() if assistance_type == "Sales Representative" else "N/A",
-    Sales_Rep_Phone = fake.phone_number() if assistance_type == "Sales Representative" else "N/A",
+    Sales_Rep_Name=fake.name() if assistance_type == "Sales Representative" else "N/A"
+    Sales_Rep_Email= fake.email() if assistance_type == "Sales Representative" else "N/A"
+    Sales_Rep_Phone = fake.phone_number() if assistance_type == "Sales Representative" else "N/A"
     Sales_Rep_ID = fake.uuid4() if assistance_type == "Sales Representative" else "N/A"
     
     return {
@@ -117,7 +117,7 @@ def create_record():
     }
 
 # Generate dataset
-data = [create_record() for _ in range(20000)]
+data = [create_record() for _ in range(30000)]
 df = pd.DataFrame(data)
 
 # Reorder columns for clarity and decision-making
