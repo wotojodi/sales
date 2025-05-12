@@ -2,10 +2,10 @@ from faker import Faker
 import pandas as pd
 import numpy as np
 import random
+import csv
+import time
 from datetime import date
 import phonenumbers
-from phonenumbers import geocoder, carrier
-from phonenumbers.phonenumberutil import region_code_for_country_code
 
 # Initialize Faker
 fake = Faker()
@@ -13,24 +13,15 @@ fake = Faker()
 # Function to get a properly formatted international phone number
 def generate_phone_number(country):
     try:
-        # Generate a fake phone number
         number = fake.phone_number()
-        
-        # Try to get the country code for the given country
         country_code = phonenumbers.country_code_for_region(fake.country_code(representation="alpha-2"))
-
-        # Parse and reformat the number with the country code
         parsed_number = phonenumbers.parse(number, None)
-        
-        # If number is valid, format in E.164 (e.g., +14155552671)
         if phonenumbers.is_valid_number(parsed_number):
             return phonenumbers.format_number(parsed_number, phonenumbers.PhoneNumberFormat.E164)
         else:
-            # Fallback: just add country code manually and strip invalid characters
             clean_number = ''.join(filter(str.isdigit, number))
-            return f"+{country_code}{clean_number[-10:]}"  # Use last 10 digits assuming it's a mobile number
+            return f"+{country_code}{clean_number[-10:]}"
     except:
-        # Fallback if formatting fails
         return f"+{random.randint(1, 199)}{random.randint(1000000000, 9999999999)}"
 
 # Function to create a single record
@@ -96,19 +87,20 @@ def create_record():
         comments = fake.sentence(ext_word_list=["Extremely disappointed!", "Product failed to meet expectations."])
     payment_method = random.choice(['Credit Card', 'PayPal', 'Skrill', 'Airpay'])
     assistance_type = random.choice(["AI-powered virtual assistant", "Sales Representative"])
-    # Add salesperson details if not AI-assisted
-    Sales_Rep_Name=fake.name() if assistance_type == "Sales Representative" else "N/A",
-    Sales_Rep_Email= fake.email() if assistance_type == "Sales Representative" else "N/A",
-    Sales_Rep_Phone = fake.phone_number() if assistance_type == "Sales Representative" else "N/A",
+    Sales_Rep_Name = fake.name() if assistance_type == "Sales Representative" else "N/A"
+    Sales_Rep_Email = fake.email() if assistance_type == "Sales Representative" else "N/A"
+    Sales_Rep_Phone = fake.phone_number() if assistance_type == "Sales Representative" else "N/A"
     Sales_Rep_ID = fake.uuid4() if assistance_type == "Sales Representative" else "N/A"
-    
+
     return {
         "Customer ID": customer_id, "Customer Name": customer_name, "Email": email, "Phone": phone, "Country": country,
         "Gender": gender, "Age": age, "Company Name": Company_Name, "Customer Type": customer_type,
         "Subscription Type": subscription_type, "Benefits of Membership Type": Benefits_of_Membership_Type,
         "Subscription Duration": Subscription_Duration, "Subscription Date": Subscription_Date,
         "Subscription Price": price, "Product ID": Product_ID, "Product Type": product_type,
-        "Inquries": Inquiry_Type, "Assistance Type": assistance_type,  "Sales Rep ID":Sales_Rep_ID , "Sales Rep Name": Sales_Rep_Name, "Sales Rep Email":Sales_Rep_Email, "Sales Rep Phone":Sales_Rep_Phone, "Cost of Product": cost_of_service, "Sales Amount": price_of_service,
+        "Inquries": Inquiry_Type, "Assistance Type": assistance_type,
+        "Sales Rep ID": Sales_Rep_ID, "Sales Rep Name": Sales_Rep_Name, "Sales Rep Email": Sales_Rep_Email, "Sales Rep Phone": Sales_Rep_Phone,
+        "Cost of Product": cost_of_service, "Sales Amount": price_of_service,
         "Sales Date": sales_date, "Sales Time": sales_time, "Payment Method": payment_method,
         "Demo Scheduled": demo_scheduled, "Promotional Event Participation": Promotional_Event_Participation,
         "Promotional Event": Type_of_Promotional_Event, "Response Time (days)": response_time,
@@ -116,52 +108,31 @@ def create_record():
         "Comments": comments, "Profit": profit, "Loss": loss
     }
 
-# Generate dataset
-data = [create_record()]
-df = pd.DataFrame(data)
+# Column order
+columns = [
+    "Customer ID", "Customer Name", "Email", "Phone", "Country", "Gender", "Age",
+    "Company Name", "Customer Type", "Subscription Type", "Benefits of Membership Type",
+    "Subscription Duration", "Subscription Date", "Subscription Price", "Product ID",
+    "Product Type", "Inquries", "Assistance Type", "Sales Rep ID", "Sales Rep Name",
+    "Sales Rep Email", "Sales Rep Phone", "Cost of Product", "Sales Amount", "Sales Date",
+    "Sales Time", "Payment Method", "Demo Scheduled", "Promotional Event Participation",
+    "Promotional Event", "Response Time (days)", "Product Status", "Refund Amount",
+    "Product Rating", "Comments", "Profit", "Loss"
+]
 
-# Reorder columns for clarity and decision-making
-df = df[[
+# Create CSV and write header if it doesn't exist
+filename = 'AI_Solution_Dataset.csv'
+try:
+    with open(filename, 'x', newline='', encoding='utf-8') as f:
+        writer = csv.DictWriter(f, fieldnames=columns)
+        writer.writeheader()
+except FileExistsError:
+    pass
 
-    "Customer ID",
-    "Customer Name",
-    "Email",
-    "Phone",
-    "Country",
-    "Gender",
-    "Age",
-    "Company Name",
-    "Customer Type",
-    "Subscription Type",
-    "Benefits of Membership Type",
-    "Subscription Duration",
-    "Subscription Price",
-    "Product ID",
-    "Product Type",
-    "Inquries",
-    "Assistance Type", 
-    "Sales Rep ID", 
-    "Sales Rep Name", 
-    "Sales Rep Email", 
-    "Sales Rep Phone",
-    "Sales Amount",
-    "Sales Date",
-    "Sales Time",
-    "Payment Method",
-    "Demo Scheduled",
-    "Promotional Event Participation",
-    "Promotional Event",
-    "Response Time (days)",
-    "Product Status",
-    "Refund Amount",
-    "Comments",
-    "Product Rating",
-    "Profit",
-    "Loss"
-]]
-
-# Save to CSV
-df.to_csv('AI_Solution_Dataset.csv', index=False)
-
-# Display the first few records
-print(df.head())
+# Infinite loop to keep writing new records
+while True:
+    record = create_record()
+    with open(filename, 'a', newline='', encoding='utf-8') as f:
+        writer = csv.DictWriter(f, fieldnames=columns)
+        writer.writerow(record)
+    time.sleep(1)  # Optional: one record per second
