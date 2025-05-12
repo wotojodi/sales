@@ -34,7 +34,7 @@ def create_record():
     gender = random.choice(['Male', 'Female'])
     age = random.randint(18, 65)
     Company_Name = fake.company()
-    customer_type = random.choice(['Subscriber', 'Non-Subscriber')
+    customer_type = random.choice(['Subscriber', 'Non-Subscriber'])
     Benefits_of_Membership_Type = random.choice(['Basic support', 'Exclusive offers'])
     Subscription_Duration = random.choice(['Monthly', 'Yearly'])
     Subscription_Date = fake.date_between(start_date=date(2022, 1, 1), end_date=date(2025, 12, 31))
