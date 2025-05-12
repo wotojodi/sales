@@ -21,12 +21,12 @@
     "server": "api.py"
   },
   "portsAttributes": {
-    "8000": {
+    "8501": {
       "label": "Main API (api.py)",
       "onAutoForward": "openPreview"
     }
   },
   "forwardPorts": [
-    8000
+    8501
   ]
 }
