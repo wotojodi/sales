@@ -115,4 +115,23 @@ def create_record():
         "Product Status": product_status, "Refund Amount": refund_amount, "Product Rating": product_rating,
         "Comments": comments, "Profit": profit, "Loss": loss
     }
+# Column order
+columns = [
+    "Customer ID", "Customer Name", "Email", "Phone", "Country", "Gender", "Age",
+    "Company Name", "Customer Type", "Subscription Type", "Benefits of Membership Type",
+    "Subscription Duration", "Subscription Date", "Subscription Price", "Product ID",
+    "Product Type", "Inquries", "Assistance Type", "Sales Rep ID", "Sales Rep Name",
+    "Sales Rep Email", "Sales Rep Phone", "Cost of Product", "Sales Amount", "Sales Date",
+    "Sales Time", "Payment Method", "Demo Scheduled", "Promotional Event Participation",
+    "Promotional Event", "Response Time (days)", "Product Status", "Refund Amount",
+    "Product Rating", "Comments", "Profit", "Loss"
+]
 
+# Create CSV and write header if it doesn't exist
+filename = 'AI_Solution_Dataset.csv'
+try:
+    with open(filename, 'x', newline='', encoding='utf-8') as f:
+        writer = csv.DictWriter(f, fieldnames=columns)
+        writer.writeheader()
+except FileExistsError:
+    pass
