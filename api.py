@@ -58,7 +58,7 @@ if not st.session_state.authenticated:
     st.stop()
 
 # ----------------- AUTO REFRESH -----------------
-st_autorefresh(interval=2000, key="auto_refresh")
+st_autorefresh(interval=60, key="auto_refresh")
 
 # 1. Append ne# 1. Append new record
 CSV_PATH = 'AI_Solution_Dataset.csv'
