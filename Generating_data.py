@@ -117,7 +117,7 @@ def create_record():
     }
 
 # Generate dataset
-data = [create_record() for _ in range(10000)]
+data = [create_record() for _ in range(1000000000000000000000000000000000000000000000000000000000000000000000000000000000000)]
 df = pd.DataFrame(data)
 
 # Reorder columns for clarity and decision-making
