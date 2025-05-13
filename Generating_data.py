@@ -6,6 +6,8 @@ from datetime import date
 import phonenumbers
 from phonenumbers import geocoder, carrier
 from phonenumbers.phonenumberutil import region_code_for_country_code
+import csv
+
 
 # Initialize Faker
 fake = Faker()
