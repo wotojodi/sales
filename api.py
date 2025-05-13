@@ -185,11 +185,9 @@ if selected == "Sales":
                 product_sales = product_sales.sort_values(by="Sales Amount", ascending=False)
                 top_10 = product_sales.head(10)
                 least_10 = product_sales.tail(10)
-        
                 return top_10, least_10
         
             top_products, least_products = get_top_least_products(completed_df)
-        
             fig_top = px.bar(
                 top_products,
                 x='Product Type',
