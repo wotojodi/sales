@@ -139,3 +139,7 @@ def save_to_csv(data):
             writer.writerow(data)
     except Exception as e:
         print(f"Error saving data to CSV: {e}")
+# Generate and save 10 records to CSV
+for _ in range(10):
+    record = create_record()
+    save_to_csv(record)
