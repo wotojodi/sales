@@ -169,7 +169,11 @@ if selected == "Sales":
 
         with fig_col1:
             @st.cache_data(ttl=60)
-            completed_df = filtered_df[filtered_df['Product Status'] == 'Completed']
+            def get_completed_df(data):
+                return data[data['Product Status'] == 'Completed']
+            
+            completed_df = get_completed_df(filtered_df)
+
             fig1 = px.bar(
                 completed_df.groupby('Sales Date').sum().reset_index(),
                 x='Sales Date', 
