@@ -202,7 +202,6 @@ if selected == "Sales":
             fig_top.update_layout(xaxis_tickangle=-45)
             st.plotly_chart(fig_top, use_container_width=True, dynamic=False)
         with fig_col3:
-            @st.cache_data(ttl=60)
             fig_least = px.bar(
                 least_products,
                 x='Product Type',
@@ -216,7 +215,6 @@ if selected == "Sales":
         fig_co1, fig_co2, fig_co3 = st.columns(3)
 
         with fig_co1:
-            @st.cache_data(ttl=60)
             fig3 = px.bar(
                 filtered_df, 
                 x='Product Type', 
@@ -227,7 +225,6 @@ if selected == "Sales":
             st.plotly_chart(fig3, use_container_width=True, dynamic=False)
         
         with fig_co2:   
-            @st.cache_data(ttl=60)
             # Layout for wide choropleth map
             st.subheader("Sales Revenue by Country")
             fig_map = px.choropleth(
@@ -245,7 +242,6 @@ if selected == "Sales":
         fig_col4, fig_col5, fig_col6 = st.columns(3)
 
         with fig_col4:
-            @st.cache_data(ttl=60)
             subscription_price_by_type = filtered_df.groupby('Subscription Type')['Subscription Price'].sum().reset_index()
             fig4 = px.pie(
                 subscription_price_by_type,
@@ -256,7 +252,6 @@ if selected == "Sales":
             st.plotly_chart(fig4, use_container_width=True, dynamic=False)
 
         with fig_col5:
-            @st.cache_data(ttl=60)
             fig5 = px.histogram(filtered_df, 
                 x='Customer Type', 
                 y='Sales Amount', 
@@ -301,7 +296,6 @@ elif selected == "Effectiveness":
         kpis_row2[2].metric("Failed Products", value=failed_product)
 
     with st.expander("📊 Customer Satisfaction & Ratings", expanded=False):
-        @st.cache_data(ttl=60)
         rating_counts = filtered_df["Product Rating"].value_counts().sort_index()
         st.plotly_chart(px.bar(
             x=rating_counts.index,
@@ -314,21 +308,18 @@ elif selected == "Effectiveness":
             title="📦 Product Rating by Completion Status"
         ), use_container_width=True, dynamic=False)
     with st.expander("🪙 Rating by Subscription Tier", expanded=False):
-        @st.cache_data(ttl=60)
         fig_sub_rating = px.box(
             filtered_df, x="Subscription Type", y="Product Rating",
             title="🔔 Rating by Subscription Type"
         )
         st.plotly_chart(fig_sub_rating, use_container_width=True, dynamic=False)
     with st.expander("📆 Customer Response Time", expanded=False):
-        @st.cache_data(ttl=60)
         fig_response = px.histogram(
             filtered_df, x="Response Time (days)", nbins=10,
             title="⏱️ Distribution of Response Times"
         )
         st.plotly_chart(fig_response, use_container_width=True, dynamic=False)
     with st.expander("💸 Refund Analysis by Status", expanded=False):
-        @st.cache_data(ttl=60)
         fig_refund = px.bar(
             filtered_df, x="Product Status", y="Refund Amount",
             title="Refund Amount by Product Status"
