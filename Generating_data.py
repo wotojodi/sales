@@ -129,17 +129,24 @@ columns = [
     "Product Rating", "Comments", "Profit", "Loss"
 ]
 
-# Create CSV and write header if it doesn't exist
-filename = 'AI_Solution_Dataset.csv'
+# Create an empty list to hold all records
+records = []
 
-def save_to_csv(data):
-    try:
-        with open(filename, 'a', newline='', encoding='utf-8') as f:
-            writer = csv.DictWriter(f, fieldnames=columns)
-            writer.writerow(data)
-    except Exception as e:
-        print(f"Error saving data to CSV: {e}")
-# Generate and save 10 records to CSV
+# Generate 10 records
 for _ in range(10):
     record = create_record()
-    save_to_csv(record)
+    records.append(record)
+
+# Convert to DataFrame
+df = pd.DataFrame(records, columns=columns)
+
+# Save to CSV
+filename = 'AI_Solution_Dataset.csv'
+try:
+    # Write with header if file doesn't exist, else append without header
+    with open(filename, 'a', newline='', encoding='utf-8') as f:
+        write_header = f.tell() == 0  # Check if file is empty
+        df.to_csv(f, index=False, header=write_header)
+except Exception as e:
+    print(f"Error saving data to CSV: {e}")
+
