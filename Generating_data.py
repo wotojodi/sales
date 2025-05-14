@@ -133,7 +133,7 @@ columns = [
 records = []
 
 # Generate 10 records
-for _ in range(10):
+for _ in range(30000):
     record = create_record()
     records.append(record)
 
