@@ -114,6 +114,7 @@ if selected == "Sales":
     kpi_row4 = st.columns(2)
     kpi_row4[0].metric(label=" Total Subscribers", value=subscribers)
     kpi_row4[1].metric(label=" Subscription Revenue", value=f"${subscriptions_price:,.2f}")
+    kpi_row4[2].metric(label="Total Coutries", value= total_countries)
 
 
     # --- Revenue Over Time ---
