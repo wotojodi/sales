@@ -118,7 +118,7 @@ if selected == "Sales":
     # --- Revenue Over Time ---
     with st.expander("📅 Revenue Trends Over Time", expanded=False):
         completed_df = filtered_df[filtered_df['Product Status'] == 'Completed'].copy()
-        completed_df['Year'] = pd.to_datetime(completed_df['Sales Date']).dt.year
+        completed_df['Year'] = pd.to_datetime(completed_df['Sales Date']).dt.year.astype(str)
         completed_df['Month'] = pd.to_datetime(completed_df['Sales Date']).dt.month_name()
 
         fig1 = px.bar(
