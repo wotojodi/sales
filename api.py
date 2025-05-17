@@ -33,8 +33,14 @@ else:
 
 # 2. Load data only once after writing
 try:
-    df = pd.read_csv(CSV_PATH, on_bad_lines='skip')
-    df.columns = df.columns.str.strip()  # Clean column names
+    @st.cache_data(ttl=60)
+    def load_data(path):
+        df = pd.read_csv(path, on_bad_lines='skip')
+        df.columns = df.columns.str.strip()
+        return df
+
+    df = load_data(CSV_PATH)
+
 except Exception as e:
     st.error(f"Failed to load data: {e}")
     st.stop()
@@ -118,15 +124,19 @@ if selected == "Sales":
     # --- Revenue Over Time ---
     with st.expander("📅 Revenue Trends Over Time", expanded=False):
         completed_df = filtered_df[filtered_df['Product Status'] == 'Completed'].copy()
-        completed_df['Year'] = pd.to_datetime(completed_df['Sales Date']).dt.year.astype(str)
         completed_df['Month'] = pd.to_datetime(completed_df['Sales Date']).dt.month_name()
 
+        # Step 1: Extract the year into a new column
+        filtered_df['Year'] = filtered_df['Sales Date'].astype(str).str[:4]
+
+        # Step 2: Group by Year and plot the graph
         fig1 = px.bar(
-            completed_df.groupby('Year')['Sales Amount'].sum().reset_index(),
+            filtered_df.groupby('Year')['Sales Amount'].sum().reset_index(),
             x='Year',
             y='Sales Amount',
             title='📊 Yearly Sales Revenue'
         )
+
 
         fig2 = px.bar(
             completed_df.groupby('Month')['Sales Amount'].sum()
