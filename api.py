@@ -88,7 +88,7 @@ if selected == "Sales":
     st.title("📈 Sales Performance Dashboard")
 
     # --- KPIs: Quick Glance at Sales Health ---
-    st.markdown("### 🧭 Key Performance Indicators")
+    st.markdown("###  Key Performance Indicators")
     total_customers = filtered_df["Customer ID"].count()
     total_countries = filtered_df["Country"].nunique()
     total_sales_revenue = filtered_df[filtered_df["Product Status"] == "Completed"]["Sales Amount"].sum()
@@ -102,23 +102,23 @@ if selected == "Sales":
     top_selling = filtered_df["Product Type"].value_counts().idxmax()
 
     kpi_row1 = st.columns(3)
-    kpi_row1[0].metric(label="💰 Total Sales Revenue", value=f"${total_sales_revenue:,.2f}")
-    kpi_row1[1].metric(label="📈 Total Profit", value=f"${total_profit:,.2f}")
-    kpi_row1[2].metric(label="📉 Total Loss", value=f"${total_loss:,.2f}")
+    kpi_row1[0].metric(label=" Total Sales Revenue", value=f"${total_sales_revenue:,.2f}")
+    kpi_row1[1].metric(label=" Total Profit", value=f"${total_profit:,.2f}")
+    kpi_row1[2].metric(label="Total Loss", value=f"${total_loss:,.2f}")
 
     kpi_row2 = st.columns(3)
-    kpi_row2[0].metric(label="👥 Total Customers", value=total_customers)
-    kpi_row2[1].metric(label="🌍 Countries Reached", value=total_countries)
-    kpi_row2[2].metric(label="📦 Total Job Requests", value=total_job_request)
+    kpi_row2[0].metric(label=" Total Customers", value=total_customers)
+    kpi_row2[1].metric(label=" Countries Reached", value=total_countries)
+    kpi_row2[2].metric(label=" Total Job Requests", value=total_job_request)
 
     kpi_row3 = st.columns(3)
-    kpi_row3[0].metric(label="🤖 AI Assistant Requests", value=AI_assistant)
-    kpi_row3[1].metric(label="🧑‍💼 Sales Rep Requests", value=sales_rep)
-    kpi_row3[2].metric(label="🏆 Top Selling Product", value=top_selling)
+    kpi_row3[0].metric(label=" AI Assistant Requests", value=AI_assistant)
+    kpi_row3[1].metric(label="Sales Rep Requests", value=sales_rep)
+    kpi_row3[2].metric(label="Top Selling Product", value=top_selling)
 
     kpi_row4 = st.columns(2)
-    kpi_row4[0].metric(label="📬 Total Subscribers", value=subscribers)
-    kpi_row4[1].metric(label="💵 Subscription Revenue", value=f"${subscriptions_price:,.2f}")
+    kpi_row4[0].metric(label=" Total Subscribers", value=subscribers)
+    kpi_row4[1].metric(label=" Subscription Revenue", value=f"${subscriptions_price:,.2f}")
 
 
     # --- Revenue Over Time ---
@@ -134,7 +134,7 @@ if selected == "Sales":
             filtered_df.groupby('Year')['Sales Amount'].sum().reset_index(),
             x='Year',
             y='Sales Amount',
-            title='📊 Yearly Sales Revenue'
+            title=' Yearly Sales Revenue'
         )
 
 
@@ -146,7 +146,7 @@ if selected == "Sales":
             ]).reset_index(),
             x='Month',
             y='Sales Amount',
-            title='📆 Monthly Sales Revenue'
+            title=' Monthly Sales Revenue'
         )
 
         st.plotly_chart(fig1, use_container_width=True)
@@ -172,7 +172,7 @@ if selected == "Sales":
             top_products,
             x='Product Type',
             y='Sales Amount',
-            title='🏅 Top 10 Best-Selling Products',
+            title=' Top 10 Best-Selling Products',
             text_auto='.2s'
         )
         fig_top.update_layout(xaxis_tickangle=-45)
@@ -181,7 +181,7 @@ if selected == "Sales":
             least_products,
             x='Product Type',
             y='Sales Amount',
-            title='🚫 Least 10 Selling Products',
+            title=' Least 10 Selling Products',
             text_auto='.2s'
         )
         fig_least.update_layout(xaxis_tickangle=-45)
@@ -190,7 +190,7 @@ if selected == "Sales":
             filtered_df,
             x='Product Type',
             y='Loss',
-            title='💸 Loss by Product Type'
+            title=' Loss by Product Type'
         )
 
         st.plotly_chart(fig_top, use_container_width=True)
@@ -206,7 +206,7 @@ if selected == "Sales":
             top_countries,
             x='Country',
             y='Sales Amount',
-            title='🌍 Top 10 Countries by Sales Revenue',
+            title=' Top 10 Countries by Sales Revenue',
             color='Sales Amount'
         )
 
@@ -217,7 +217,7 @@ if selected == "Sales":
             x='Sales Amount',
             y='Country',
             orientation='h',
-            title='📉 Least Performing Countries',
+            title=' Least Performing Countries',
             color='Sales Amount',
             color_continuous_scale='reds'
         )
@@ -227,7 +227,7 @@ if selected == "Sales":
 
 
     # --- Subscription Sales Breakdown ---
-    with st.expander("📦 Subscription-Based Revenue Analysis", expanded=False):
+    with st.expander(" Subscription-Based Revenue Analysis", expanded=False):
         fig_col1, fig_col2 = st.columns(2)
 
         with fig_col1:
@@ -236,7 +236,7 @@ if selected == "Sales":
                 subscription_price_by_type,
                 names='Subscription Type',
                 values='Subscription Price',
-                title='🧾 Revenue Distribution by Subscription Type'
+                title=' Revenue Distribution by Subscription Type'
             )
             st.plotly_chart(fig_subs, use_container_width=True)
 
@@ -245,7 +245,7 @@ if selected == "Sales":
                 filtered_df,
                 x='Customer Type',
                 y='Sales Amount',
-                title='🧍 Customer Type vs Sales Amount'
+                title=' Customer Type vs Sales Amount'
             )
             st.plotly_chart(fig_customer_type, use_container_width=True)
 
