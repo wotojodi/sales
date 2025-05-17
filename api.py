@@ -33,14 +33,8 @@ else:
 
 # 2. Load data only once after writing
 try:
-    @st.cache_data(ttl=60)
-    def load_data(path):
-        df = pd.read_csv(path, on_bad_lines='skip')
-        df.columns = df.columns.str.strip()
-        return df
-
-    df = load_data(CSV_PATH)
-
+    df = pd.read_csv(CSV_PATH, on_bad_lines='skip')
+    df.columns = df.columns.str.strip()  # Clean column names
 except Exception as e:
     st.error(f"Failed to load data: {e}")
     st.stop()
