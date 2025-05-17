@@ -146,7 +146,7 @@ columns = [
 records = []
 
 # Generate 10 records
-for _ in range(10000):
+for _ in range(100):
     record = create_record()
     records.append(record)
 
