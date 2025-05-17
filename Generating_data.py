@@ -74,7 +74,14 @@ def create_record():
         'Panel Discussions with AI Experts', 'AI-Driven Marketing Strategy Sessions'])
     price_of_service = round(np.random.uniform(150, 300), 2)
     response_time = random.randint(1, 10)
-    product_status = random.choice(['Completed', 'Canceled', 'Failed'])
+    product_status = random.choice(['In Progress', 'Completed', 'On Hold', 'Cancelled'])
+    status_meaning = {
+        'In Progress': 'Work on the product is underway.',
+        'Completed': 'The product has been successfully delivered.',
+        'On Hold': 'The product delivery has been temporarily paused.',
+        'Cancelled': 'The order was cancelled before completion.'
+    }
+    meaning = status_meaning[product_status]
     refund_amount = 0.0
     comments = ""
     if product_status == 'Completed':
@@ -82,20 +89,23 @@ def create_record():
         profit = price_of_service - cost_of_service
         loss = 0.0 if profit >= 0 else abs(profit)
         product_rating = random.randint(3, 5)
-        comments = fake.sentence(ext_word_list=["Excellent", "Great", "Loved", "Fantastic", "Highly recommend", "Will buy again"] if product_rating >= 4 else ["Average", "Okay", "Not bad", "Could be better"])
-    elif product_status == 'Canceled':
+        comments = fake.sentence(ext_word_list=["Excellent", "Great", "Loved", "Fantastic", "Highly recommend", "Will buy again"])
+    
+    elif product_status == 'In Progress' or product_status == 'On Hold':
+        profit = 0.0
+        loss = 0.0
+        product_rating = None
+        comments = ''
+    
+    elif product_status == 'Cancelled':
         cancellation_fee = 20.0
         refund_amount = max(0.0, price_of_service - cancellation_fee)
-        profit = refund_amount - cost_of_service
+        revenue = cancellation_fee
+        profit = revenue - cost_of_service
         loss = 0.0 if profit >= 0 else abs(profit)
         product_rating = random.choice([1, 2])
-        comments = fake.sentence(ext_word_list=["Cancellation due to delays.", "Service was not as described."])
-    else:
-        refund_amount = price_of_service
-        loss = cost_of_service + refund_amount
-        profit = 0.0
-        product_rating = random.choice([1, 2])
-        comments = fake.sentence(ext_word_list=["Extremely disappointed!", "Product failed to meet expectations."])
+        comments = fake.sentence(ext_word_list=["Cancellation due to delays", "Service was not as described"])
+
     payment_method = random.choice(['Credit Card', 'PayPal', 'Skrill', 'Airpay'])
     assistance_type = random.choice(["AI-powered virtual assistant", "Sales Representative"])
     # Add salesperson details if not AI-assisted
@@ -110,30 +120,33 @@ def create_record():
         "Subscription Type": subscription_type, "Benefits of Membership Type": Benefits_of_Membership_Type,
         "Subscription Duration": Subscription_Duration, "Subscription Date": Subscription_Date,
         "Subscription Price": price, "Product ID": Product_ID, "Product Type": product_type,
-        "Inquries": Inquiry_Type, "Assistance Type": assistance_type,  "Sales Rep ID":Sales_Rep_ID , "Sales Rep Name": Sales_Rep_Name, "Sales Rep Email":Sales_Rep_Email, "Sales Rep Phone":Sales_Rep_Phone, "Cost of Product": cost_of_service, "Sales Amount": price_of_service,
-        "Sales Date": sales_date, "Sales Time": sales_time, "Payment Method": payment_method,
-        "Demo Scheduled": demo_scheduled, "Promotional Event Participation": Promotional_Event_Participation,
-        "Promotional Event": Type_of_Promotional_Event, "Response Time (days)": response_time,
-        "Product Status": product_status, "Refund Amount": refund_amount, "Product Rating": product_rating,
-        "Comments": comments, "Profit": profit, "Loss": loss
+        "Inquries": Inquiry_Type, "Assistance Type": assistance_type,  "Sales Rep ID": Sales_Rep_ID, 
+        "Sales Rep Name": Sales_Rep_Name, "Sales Rep Email": Sales_Rep_Email, "Sales Rep Phone": Sales_Rep_Phone,
+        "Cost of Product": cost_of_service, "Sales Amount": price_of_service, "Sales Date": sales_date,
+        "Sales Time": sales_time, "Payment Method": payment_method, "Demo Scheduled": demo_scheduled,
+        "Promotional Event Participation": Promotional_Event_Participation, "Promotional Event": Type_of_Promotional_Event,
+        "Response Time (days)": response_time, "Product Status": product_status, "Meaning": meaning,
+        "Refund Amount": refund_amount, "Product Rating": product_rating, "Comments": comments,
+        "Profit": round(profit, 2), "Loss": round(loss, 2)
     }
+
 # Column order
 columns = [
-    "Customer ID", "Customer Name", "Email", "Phone", "Country", "Gender", "Age",
-    "Company Name", "Customer Type", "Subscription Type", "Benefits of Membership Type",
-    "Subscription Duration", "Subscription Date", "Subscription Price", "Product ID",
-    "Product Type", "Inquries", "Assistance Type", "Sales Rep ID", "Sales Rep Name",
-    "Sales Rep Email", "Sales Rep Phone", "Cost of Product", "Sales Amount", "Sales Date",
-    "Sales Time", "Payment Method", "Demo Scheduled", "Promotional Event Participation",
-    "Promotional Event", "Response Time (days)", "Product Status", "Refund Amount",
-    "Product Rating", "Comments", "Profit", "Loss"
+    "Customer ID", "Customer Name", "Email", "Phone", "Country", "Gender", "Age", "Company Name",
+    "Customer Type", "Subscription Type", "Benefits of Membership Type", "Subscription Duration",
+    "Subscription Date", "Subscription Price", "Product ID", "Product Type", "Inquries",
+    "Assistance Type", "Sales Rep ID", "Sales Rep Name", "Sales Rep Email", "Sales Rep Phone",
+    "Cost of Product", "Sales Amount", "Sales Date", "Sales Time", "Payment Method", "Demo Scheduled",
+    "Promotional Event Participation", "Promotional Event", "Response Time (days)", "Product Status",
+    "Meaning", "Refund Amount", "Product Rating", "Comments", "Profit", "Loss"
 ]
+
 
 # Create an empty list to hold all records
 records = []
 
 # Generate 10 records
-for _ in range(30000):
+for _ in range(10000):
     record = create_record()
     records.append(record)
 
