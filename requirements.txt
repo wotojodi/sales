@@ -12,4 +12,3 @@ fastapi
 requests
 streamlit_autorefresh
 phonenumbers
-textblob

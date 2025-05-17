@@ -10,7 +10,6 @@ from io import BytesIO
 from streamlit_option_menu import option_menu
 from streamlit_autorefresh import st_autorefresh
 from Generating_data import create_record
-from textblob import TextBlob
 
 
 # ----------------- CONFIG -----------------
@@ -32,15 +31,17 @@ else:
         new_df.to_csv(f, header=False, index=False)
 
 # 2. Load data only once after writing
-try:
-    df = pd.read_csv(CSV_PATH, on_bad_lines='skip')
-    df.columns = df.columns.str.strip()  # Clean column names
-except Exception as e:
-    st.error(f"Failed to load data: {e}")
-    st.stop()
+@st.cache
+def load_data():
+    try:
+        df = pd.read_csv(CSV_PATH, on_bad_lines='skip')
+        df.columns = df.columns.str.strip()  # Clean column names
+        return df
+    except Exception as e:
+        st.error(f"Failed to load data: {e}")
+        st.stop()
 
-
-
+df = load_data()
 
 # ----------------- SIDEBAR FILTERS -----------------
 st.sidebar.header("Filter Options")
@@ -130,7 +131,6 @@ if selected == "Sales":
             y='Sales Amount',
             title=' Yearly Sales Revenue'
         )
-
 
         fig2 = px.bar(
             completed_df.groupby('Month')['Sales Amount'].sum()
@@ -307,16 +307,6 @@ elif selected == "Effectiveness":
             title="Refund Distribution by Product Type"
         )
         st.plotly_chart(fig_refund, use_container_width=True)
-
-    # --- Sentiment Overview ---
-    with st.expander("🗣️ Customer Feedback Sentiment", expanded=False):
-        sentiment_counts = filtered_df["Sentiment"].value_counts()
-        fig_sentiment = px.pie(
-            names=sentiment_counts.index,
-            values=sentiment_counts.values,
-            title="Customer Sentiment from Comments"
-        )
-        st.plotly_chart(fig_sentiment, use_container_width=True)
 
     # --- Response Time Distribution ---
     with st.expander("⏱️ Response Time Analysis", expanded=False):
