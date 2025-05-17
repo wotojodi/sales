@@ -265,7 +265,6 @@ elif selected == "Effectiveness":
     total_promotion= filtered_df[filtered_df["Promotional Event Participation"]== 'Yes'].shape[0]
     completed = filtered_df[filtered_df['Product Status'] == 'Completed']
     conversion_rate = round((len(completed) / demo) * 100, 2) if demo > 0 else 0
-    filtered_df["Sentiment"] = filtered_df["Comments"].astype(str).apply(lambda x: "Positive" if TextBlob(x).sentiment.polarity > 0.1 else "Negative" if TextBlob(x).sentiment.polarity < -0.1 else "Neutral")
 
 
     with st.expander("📌 Effectiveness KPIs", expanded=True):
