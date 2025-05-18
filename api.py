@@ -154,6 +154,8 @@ if selected == "Sales":
             y='Sales Amount',
             title=' Top 10 Best-Selling Products',
         )
+        fig_top.update_layout(xaxis_tickangle=-45)
+
 
         filtered_df = df.sort_values(by='Loss', ascending=False)  # no .head()
 
