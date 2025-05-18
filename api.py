@@ -139,11 +139,13 @@ if selected == "Sales":
         # Ensure you're using only completed sales for meaningful sales metrics
         completed_df = filtered_df[filtered_df['Product Status'] == 'Completed']
 
-        # Extract Top & Least Selling Products
         def get_top_least_products(data):
             product_sales = data.groupby("Product Type")["Sales Amount"].sum().reset_index()
+            product_sales = product_sales.sort_values(by="Sales Amount", ascending=False)
             top_10 = product_sales.head(10)
-            return top_10
+            least_10 = product_sales.tail(10)
+            return top_10, least_10
+
 
         top_products, least_products = get_top_least_products(completed_df)
 
