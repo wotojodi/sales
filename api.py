@@ -13,10 +13,10 @@ from Generating_data import create_record
 
 
 # ----------------- CONFIG -----------------
-st.set_page_config(page_title="Sales and Marketing Dashboard", layout="wide", initial_sidebar_state="collapsed")
+st.set_page_config(page_title="Sales and Marketing Dashboard", layout="wide")
 
 # ----------------- AUTO REFRESH -----------------
-st_autorefresh(interval=60, key="auto_refresh")
+st_autorefresh(interval=60000, limit=None, key="data_refresh")
 
 # 1. Append ne# 1. Append new record
 CSV_PATH = 'AI_Solution_Dataset.csv'
