@@ -142,7 +142,6 @@ if selected == "Sales":
         # Extract Top & Least Selling Products
         def get_top_least_products(data):
             product_sales = data.groupby("Product Type")["Sales Amount"].sum().reset_index()
-            product_sales = product_sales.sort_values(by="Sales Amount", ascending=False)
             top_10 = product_sales.head(10)
             return top_10
 
