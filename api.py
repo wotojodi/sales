@@ -111,27 +111,14 @@ if selected == "Sales":
     kpi_row3[1].metric(label="Sales Rep Requests", value=sales_rep)
     kpi_row3[2].metric(label="Top Selling Product", value=top_selling)
 
-    kpi_row4 = st.columns(3)
+    kpi_row4 = st.columns(2)
     kpi_row4[0].metric(label=" Total Subscribers", value=subscribers)
     kpi_row4[1].metric(label=" Subscription Revenue", value=f"${subscriptions_price:,.2f}")
-    kpi_row4[2].metric(label="Total Coutries", value= total_countries)
-
 
     # --- Revenue Over Time ---
     with st.expander("📅 Revenue Trends Over Time", expanded=False):
         completed_df = filtered_df[filtered_df['Product Status'] == 'Completed'].copy()
         completed_df['Month'] = pd.to_datetime(completed_df['Sales Date']).dt.month_name()
-
-        # Step 1: Extract the year into a new column
-        filtered_df['Year'] = filtered_df['Sales Date'].astype(str).str[:4]
-
-        # Step 2: Group by Year and plot the graph
-        fig1 = px.bar(
-            filtered_df.groupby('Year')['Sales Amount'].sum().reset_index(),
-            x='Year',
-            y='Sales Amount',
-            title=' Yearly Sales Revenue'
-        )
 
         fig2 = px.bar(
             completed_df.groupby('Month')['Sales Amount'].sum()
@@ -144,7 +131,6 @@ if selected == "Sales":
             title=' Monthly Sales Revenue'
         )
 
-        st.plotly_chart(fig1, use_container_width=True)
         st.plotly_chart(fig2, use_container_width=True)
 
 
@@ -158,8 +144,7 @@ if selected == "Sales":
             product_sales = data.groupby("Product Type")["Sales Amount"].sum().reset_index()
             product_sales = product_sales.sort_values(by="Sales Amount", ascending=False)
             top_10 = product_sales.head(10)
-            least_10 = product_sales.tail(10)
-            return top_10, least_10
+            return top_10
 
         top_products, least_products = get_top_least_products(completed_df)
 
@@ -172,16 +157,8 @@ if selected == "Sales":
         )
         fig_top.update_layout(xaxis_tickangle=-45)
 
-        fig_least = px.bar(
-            least_products,
-            x='Product Type',
-            y='Sales Amount',
-            title=' Least 10 Selling Products',
-            text_auto='.2s'
-        )
-        fig_least.update_layout(xaxis_tickangle=-45)
+        filtered_df = df.sort_values(by='Loss', ascending=False)  # no .head()
 
-        filtered_df = df.sort_values(by='Loss', ascending=False)
         fig_loss = px.bar(
             filtered_df,
             x='Product Type',
@@ -190,7 +167,6 @@ if selected == "Sales":
         )
 
         st.plotly_chart(fig_top, use_container_width=True)
-        st.plotly_chart(fig_least, use_container_width=True)
         st.plotly_chart(fig_loss, use_container_width=True)
 
 
@@ -206,21 +182,7 @@ if selected == "Sales":
             color='Sales Amount'
         )
 
-        # Optional: Least-selling countries
-        least_countries = completed_df.groupby('Country')['Sales Amount'].sum().nsmallest(10).reset_index()
-        fig_least_country = px.bar(
-            least_countries,
-            x='Sales Amount',
-            y='Country',
-            orientation='h',
-            title=' Least Performing Countries',
-            color='Sales Amount',
-            color_continuous_scale='reds'
-        )
-
         st.plotly_chart(fig_top_countries, use_container_width=True)
-        st.plotly_chart(fig_least_country, use_container_width=True)
-
 
     # --- Subscription Sales Breakdown ---
     with st.expander(" Subscription-Based Revenue Analysis", expanded=False):
@@ -293,12 +255,6 @@ elif selected == "Effectiveness":
         )
         st.plotly_chart(fig_top, use_container_width=True)
 
-        fig_least = px.box(
-            filtered_df[filtered_df["Product Type"].isin(least_selling)],
-            x="Product Type", y="Product Rating",
-            title="Least-Selling Products: Rating Distribution"
-        )
-        st.plotly_chart(fig_least, use_container_width=True)
 
     # --- Refund Distribution ---
     with st.expander("💸 Refund Analysis by Product", expanded=False):
@@ -318,13 +274,6 @@ elif selected == "Effectiveness":
         )
         st.plotly_chart(fig_hist, use_container_width=True)
 
-        fig_response_by_product = px.box(
-            filtered_df,
-            x="Product Type", y="Response Time (days)",
-            title="Response Time by Product Type"
-        )
-        st.plotly_chart(fig_response_by_product, use_container_width=True)
-
     # --- Product Status ---
     with st.expander("📦 Product Status Overview", expanded=False):
         status_counts = filtered_df['Product Status'].value_counts().reset_index()
@@ -341,54 +290,48 @@ elif selected == "Effectiveness":
 elif selected == "Analysis":
     st.subheader("🧾 Deeper Data Analysis")
 
-    # Aggregated Financial Overview by Country
-    with st.expander("🧾 Aggregated Financial Overview by Country", expanded=True):
-        st.write("This table summarizes the total, average, and number of records for Sales Amount, Profit, and Loss per country, categorized by product status.")
-        aggregated_data = (
-            filtered_df.groupby(["Country", "Product Status"])[["Sales Amount", "Profit", "Loss"]]
+    # Combined Aggregated Table by Country and Product Type
+    with st.expander("🌍 Combined Summary: Country vs Product Type", expanded=True):
+        st.write("This table combines country and product type performance across key financial and satisfaction metrics.")
+
+        combined_summary = (
+            filtered_df.groupby(["Country", "Product Type"])[
+                ["Sales Amount", "Cost of Product", "Profit", "Loss", "Response Time (days)", "Product Rating"]
+            ]
             .agg(['sum', 'mean', 'count'])
             .round(2)
         )
-        aggregated_data = aggregated_data.sort_values(('Sales Amount', 'sum'), ascending=False)
-        st.dataframe(aggregated_data, use_container_width=True)
 
-    # Profit and Loss Breakdown
-    with st.expander("📊 Profit and Loss Breakdown by Product Type and Status", expanded=True):
-        st.write("This table provides a detailed breakdown of profits and losses based on product type and status. It shows how each product contributes to overall financial performance.")
+        # Sort by highest total sales
+        combined_summary = combined_summary.sort_values(('Sales Amount', 'sum'), ascending=False)
         
-        # Aggregate profit and loss by product type and status
-        profit_loss_summary = (
-            filtered_df.groupby(["Product Type", "Product Status"])[["Sales Amount", "Cost of Product", "Refund Amount", "Profit", "Loss"]]
-            .agg(['sum', 'mean', 'count'])
-            .round(2)
-        )
-        # Sort by profit in descending order
-        profit_loss_summary = profit_loss_summary.sort_values(('Profit', 'sum'), ascending=False)
-        st.dataframe(profit_loss_summary, use_container_width=True)
+        st.dataframe(combined_summary, use_container_width=True)
+    # Ensure Date column is datetime
+    filtered_df["Date"] = pd.to_datetime(filtered_df["Date"])
 
-    # Summary by Customer Type and Subscription
-    with st.expander("📋 Summary by Customer Type and Subscription Type", expanded=False):
-        st.write("This table summarizes sales, profit, and loss statistics broken down by customer type, subscription type, and product status. It helps identify trends in customer behavior and financial outcomes.")
-        
-        customer_summary = (
-            filtered_df.groupby(["Customer Type", "Subscription Type", "Product Status"])[["Sales Amount", "Profit", "Loss"]]
-            .agg(['sum', 'mean', 'count'])
-            .round(2)
-        )
-        customer_summary = customer_summary.sort_values(('Sales Amount', 'sum'), ascending=False)
-        st.dataframe(customer_summary, use_container_width=True)
+    # Create time features
+    filtered_df["Day"] = filtered_df["Date"].dt.date
+    filtered_df["Month"] = filtered_df["Date"].dt.to_period("M").astype(str)
+    filtered_df["Year"] = filtered_df["Date"].dt.year
 
-    # Response Time & Refund Insight Table
-    with st.expander("🕒 Response Time & Refund Insight Analysis", expanded=False):
-        st.write("This table examines how refund amounts relate to customer response times, categorized by product type and status. It provides insights into customer satisfaction and operational efficiency.")
-        
-        response_refund = (
-            filtered_df.groupby(["Product Type", "Product Status"])[["Response Time (days)", "Refund Amount"]]
-            .agg(['mean', 'max', 'count'])
-            .round(2)
-        )
-        response_refund = response_refund.sort_values(('Response Time (days)', 'mean'), ascending=False)
-        st.dataframe(response_refund, use_container_width=True)
+    with st.expander("📈 Time-Based Profit & Loss Summary", expanded=True):
+        st.write("This section shows daily, monthly, and yearly trends of profit and loss.")
+
+        # Daily
+        daily = filtered_df.groupby("Day")[["Profit", "Loss"]].sum().round(2)
+        st.markdown("#### 📆 Daily Profit & Loss")
+        st.dataframe(daily.tail(30), use_container_width=True)  # show last 30 days
+
+        # Monthly
+        monthly = filtered_df.groupby("Month")[["Profit", "Loss"]].sum().round(2)
+        st.markdown("#### 🗓️ Monthly Profit & Loss")
+        st.dataframe(monthly.tail(12), use_container_width=True)
+
+        # Yearly
+        yearly = filtered_df.groupby("Year")[["Profit", "Loss"]].sum().round(2)
+        st.markdown("#### 📅 Yearly Profit & Loss")
+        st.dataframe(yearly, use_container_width=True)
+
 
     # Descriptive Statistics Summary
     with st.expander("📌 Descriptive Statistics Overview", expanded=False):
