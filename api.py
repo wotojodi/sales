@@ -181,6 +181,7 @@ if selected == "Sales":
         )
         fig_least.update_layout(xaxis_tickangle=-45)
 
+        filtered_df = df.sort_values(by='Loss', ascending=False)
         fig_loss = px.bar(
             filtered_df,
             x='Product Type',
