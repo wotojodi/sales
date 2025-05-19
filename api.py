@@ -308,12 +308,12 @@ elif selected == "Analysis":
         
         st.dataframe(combined_summary, use_container_width=True)
     # Ensure Date column is datetime
-    filtered_df["Date"] = pd.to_datetime(filtered_df["Date"])
+    filtered_df["Sales Date"] = pd.to_datetime(filtered_df["Sales Date"])
 
     # Create time features
-    filtered_df["Day"] = filtered_df["Date"].dt.date
-    filtered_df["Month"] = filtered_df["Date"].dt.to_period("M").astype(str)
-    filtered_df["Year"] = filtered_df["Date"].dt.year
+    filtered_df["Day"] = filtered_df["Sales Date"].dt.date
+    filtered_df["Month"] = filtered_df["Sales Date"].dt.to_period("M").astype(str)
+    filtered_df["Year"] = filtered_df["Sales Date"].dt.year
 
     with st.expander("📈 Time-Based Profit & Loss Summary", expanded=True):
         st.write("This section shows daily, monthly, and yearly trends of profit and loss.")
