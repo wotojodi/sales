@@ -289,6 +289,10 @@ elif selected == "Effectiveness":
 # ----------------- ANALYSIS TAB -----------------
 elif selected == "Analysis":
     st.subheader("🧾 Deeper Data Analysis")
+    # Clean up profit and loss for clarity
+    filtered_df["Adjusted Profit"] = filtered_df["Profit"].apply(lambda x: x if x > 0 else 0)
+    filtered_df["Adjusted Loss"] = filtered_df["Profit"].apply(lambda x: abs(x) if x < 0 else 0)
+
 
     # Combined Aggregated Table by Country and Product Type
     with st.expander("🌍 Combined Summary: Country vs Product Type", expanded=True):
@@ -296,7 +300,7 @@ elif selected == "Analysis":
 
         combined_summary = (
             filtered_df.groupby(["Country", "Product Type"])[
-                ["Sales Amount", "Cost of Product", "Profit", "Loss", "Response Time (days)", "Product Rating"]
+                ["Sales Amount", "Cost of Product", "Adjusted Profit", "Adjusted Loss", "Response Time (days)", "Product Rating","Comments]
             ]
             .agg(['sum', 'mean', 'count'])
             .round(2)
@@ -306,12 +310,29 @@ elif selected == "Analysis":
         combined_summary = combined_summary.sort_values(('Sales Amount', 'sum'), ascending=False)
         
         st.dataframe(combined_summary, use_container_width=True)
+
+    with st.expander("🏆 Most Bought Products Summary", expanded=True):
+        st.write("This table shows the most frequently bought products along with key performance metrics.")
+    
+        product_summary = (
+            filtered_df.groupby("Product Type")[[
+                "Sales Amount", "Adjusted Profit", "Adjusted Loss", "Cost of Product", "Subscription Price", "Product Rating"
+            ]]
+            .agg(['count', 'sum', 'mean'])  # count shows frequency (how often bought)
+            .round(2)
+        )
+    
+        # Sort by count of purchases (i.e., most bought)
+        product_summary = product_summary.sort_values(('Sales Amount', 'count'), ascending=False)
+    
+        st.dataframe(product_summary, use_container_width=True)
+
     # Ensure Date column is datetime
     filtered_df["Sales Date"] = pd.to_datetime(filtered_df["Sales Date"])
 
     # Create time features
     filtered_df["Day"] = filtered_df["Sales Date"].dt.date
-    filtered_df["Month"] = filtered_df["Sales Date"].dt.to_period("M").astype(str)
+    filtered_df["Month"] = filtered_df["Sales Date"].dt.month_name()  
     filtered_df["Year"] = filtered_df["Sales Date"].dt.year
 
     with st.expander("📈 Time-Based Profit & Loss Summary", expanded=True):
