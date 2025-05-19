@@ -31,7 +31,6 @@ else:
         new_df.to_csv(f, header=False, index=False)
 
 # 2. Load data only once after writing
-@st.cache_data
 def load_data():
     try:
         df = pd.read_csv(CSV_PATH, on_bad_lines='skip')
