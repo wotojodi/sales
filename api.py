@@ -10,7 +10,6 @@ from io import BytesIO
 from streamlit_option_menu import option_menu
 from streamlit_autorefresh import st_autorefresh
 from Generating_data import create_record
-import numpy as np
 
 
 # ----------------- CONFIG -----------------
@@ -79,18 +78,14 @@ filtered_df.to_csv(towrite, index=False)
 towrite.seek(0)
 st.download_button("Export to CSV", data=towrite, file_name="Filtered_AI_Data.csv", mime="text/csv")
 #-------------------- tabs-----------------
-
-# --- SALES TAB ---
 if selected == "Sales":
     st.title("📈 Sales Performance Dashboard")
 
     # --- KPIs: Quick Glance at Sales Health ---
-    st.markdown("### Key Performance Indicators")
-
-    total_customers = filtered_df["Customer ID"].nunique()
+    st.markdown("###  Key Performance Indicators")
+    total_customers = filtered_df["Customer ID"].count()
     total_countries = filtered_df["Country"].nunique()
-    completed_sales = filtered_df[filtered_df["Product Status"] == "Completed"]
-    total_sales_revenue = completed_sales["Sales Amount"].sum()
+    total_sales_revenue = filtered_df[filtered_df["Product Status"] == "Completed"]["Sales Amount"].sum()
     total_profit = filtered_df['Profit'].sum()
     total_loss = filtered_df['Loss'].sum()
     total_job_request = filtered_df["Product Type"].count()
@@ -100,67 +95,126 @@ if selected == "Sales":
     sales_rep = filtered_df[filtered_df["Assistance Type"] == 'Sales Representative'].shape[0]
     top_selling = filtered_df["Product Type"].value_counts().idxmax()
 
-    benchmark_sales = 1000000  # example benchmark values for context
-    benchmark_profit = 200000
-    benchmark_customers = 5000
-
     kpi_row1 = st.columns(3)
-    kpi_row1[0].metric("Total Sales Revenue", f"${total_sales_revenue:,.2f}", delta=f"${total_sales_revenue - benchmark_sales:,.2f}")
-    kpi_row1[1].metric("Total Profit", f"${total_profit:,.2f}", delta=f"${total_profit - benchmark_profit:,.2f}")
-    kpi_row1[2].metric("Total Loss", f"${total_loss:,.2f}")
+    kpi_row1[0].metric(label=" Total Sales Revenue", value=f"${total_sales_revenue:,.2f}")
+    kpi_row1[1].metric(label=" Total Profit", value=f"${total_profit:,.2f}")
+    kpi_row1[2].metric(label="Total Loss", value=f"${total_loss:,.2f}")
 
     kpi_row2 = st.columns(3)
-    kpi_row2[0].metric("Total Customers", total_customers, delta=f"{total_customers - benchmark_customers}")
-    kpi_row2[1].metric("Countries Reached", total_countries)
-    kpi_row2[2].metric("Total Job Requests", total_job_request)
+    kpi_row2[0].metric(label=" Total Customers", value=total_customers)
+    kpi_row2[1].metric(label=" Countries Reached", value=total_countries)
+    kpi_row2[2].metric(label=" Total Job Requests", value=total_job_request)
 
     kpi_row3 = st.columns(3)
-    kpi_row3[0].metric("AI Assistant Requests", AI_assistant)
-    kpi_row3[1].metric("Sales Rep Requests", sales_rep)
-    kpi_row3[2].metric("Top Selling Product", top_selling)
+    kpi_row3[0].metric(label=" AI Assistant Requests", value=AI_assistant)
+    kpi_row3[1].metric(label="Sales Rep Requests", value=sales_rep)
+    kpi_row3[2].metric(label="Top Selling Product", value=top_selling)
 
     kpi_row4 = st.columns(2)
-    kpi_row4[0].metric("Total Subscribers", subscribers)
-    kpi_row4[1].metric("Subscription Revenue", f"${subscriptions_price:,.2f}")
+    kpi_row4[0].metric(label=" Total Subscribers", value=subscribers)
+    kpi_row4[1].metric(label=" Subscription Revenue", value=f"${subscriptions_price:,.2f}")
 
     # --- Revenue Over Time ---
     with st.expander("📅 Revenue Trends Over Time", expanded=False):
-        completed_df = completed_sales.copy()
+        completed_df = filtered_df[filtered_df['Product Status'] == 'Completed'].copy()
+        # Fix Sales Date column only in this slice
         completed_df['Sales Date'] = pd.to_datetime(completed_df['Sales Date'], errors='coerce')
-        completed_df['Month'] = completed_df['Sales Date'].dt.to_period('M').dt.to_timestamp()
+        completed_df['Month'] = completed_df['Sales Date'].dt.month_name()
 
-        monthly_sales = completed_df.groupby('Month')['Sales Amount'].sum().reset_index()
-        fig = px.line(monthly_sales, x='Month', y='Sales Amount', title='Monthly Sales Revenue')
-        st.plotly_chart(fig, use_container_width=True)
-
-        # Sales forecast for next 3 months using simple linear extrapolation
-        if len(monthly_sales) > 3:
-            recent = monthly_sales.tail(3)
-            x = np.arange(len(recent))
-            y = recent['Sales Amount'].values
-            coeffs = np.polyfit(x, y, 1)
-            forecast_x = np.arange(len(recent), len(recent)+3)
-            forecast_y = coeffs[0]*forecast_x + coeffs[1]
-            forecast_months = pd.date_range(start=monthly_sales['Month'].max()+pd.offsets.MonthBegin(), periods=3, freq='MS')
-            forecast_df = pd.DataFrame({"Month": forecast_months, "Forecasted Sales": forecast_y})
-            fig2 = px.line(forecast_df, x='Month', y='Forecasted Sales', title='3-Month Sales Forecast')
-            st.plotly_chart(fig2, use_container_width=True)
-
-    # --- Sales Trend Heatmap by Month and Product ---
-    with st.expander("📊 Sales Trend Heatmap by Month and Product", expanded=False):
-        heatmap_df = completed_df.groupby(['Month', 'Product Type'])['Sales Amount'].sum().reset_index()
-        heatmap_pivot = heatmap_df.pivot(index='Product Type', columns='Month', values='Sales Amount').fillna(0)
-        fig_heatmap = px.imshow(
-            heatmap_pivot,
-            labels=dict(x="Month", y="Product Type", color="Sales Amount"),
-            title="Sales Heatmap (Product vs. Month)"
+        fig2 = px.bar(
+            completed_df.groupby('Month')['Sales Amount'].sum()
+            .reindex([
+                'January', 'February', 'March', 'April', 'May', 'June',
+                'July', 'August', 'September', 'October', 'November', 'December'
+            ]).reset_index(),
+            x='Month',
+            y='Sales Amount',
+            title=' Monthly Sales Revenue'
         )
-        st.plotly_chart(fig_heatmap, use_container_width=True)
 
-# --- EFFECTIVENESS TAB ---
+        st.plotly_chart(fig2, use_container_width=True)
+
+
+    # --- Product-Level Performance ---
+    with st.expander("🏷️ Product Sales Insights", expanded=False):
+        # Ensure you're using only completed sales for meaningful sales metrics
+        completed_df = filtered_df[filtered_df['Product Status'] == 'Completed']
+
+        def get_top_least_products(data):
+            product_sales = data.groupby("Product Type")["Sales Amount"].sum().reset_index()
+            product_sales = product_sales.sort_values(by="Sales Amount", ascending=False)
+            top_10 = product_sales.head(10)
+            least_10 = product_sales.tail(10)
+            return top_10, least_10
+
+
+        top_products, least_products = get_top_least_products(completed_df)
+
+        fig_top = px.bar(
+            top_products,
+            x='Product Type',
+            y='Sales Amount',
+            title=' Top 10 Best-Selling Products',
+        )
+        fig_top.update_layout(xaxis_tickangle=-45)
+
+
+        filtered_df = df.sort_values(by='Loss', ascending=False)  # no .head()
+
+        fig_loss = px.bar(
+            filtered_df,
+            x='Product Type',
+            y='Loss',
+            title=' Loss by Product Type'
+        )
+
+        st.plotly_chart(fig_top, use_container_width=True)
+        st.plotly_chart(fig_loss, use_container_width=True)
+
+
+    # --- Country-Level Performance ---
+    with st.expander("🌐 Country-Level Sales Breakdown", expanded=False):
+        top_countries = completed_df.groupby('Country')['Sales Amount'].sum().sort_values(ascending=False).head(10).reset_index()
+
+        fig_top_countries = px.bar(
+            top_countries,
+            x='Country',
+            y='Sales Amount',
+            title=' Top 10 Countries by Sales Revenue',
+            color='Sales Amount'
+        )
+
+        st.plotly_chart(fig_top_countries, use_container_width=True)
+
+    # --- Subscription Sales Breakdown ---
+    with st.expander(" Subscription-Based Revenue Analysis", expanded=False):
+        fig_col1, fig_col2 = st.columns(2)
+
+        with fig_col1:
+            subscription_price_by_type = filtered_df.groupby('Subscription Type')['Subscription Price'].sum().reset_index()
+            fig_subs = px.pie(
+                subscription_price_by_type,
+                names='Subscription Type',
+                values='Subscription Price',
+                title=' Revenue Distribution by Subscription Type'
+            )
+            st.plotly_chart(fig_subs, use_container_width=True)
+
+        with fig_col2:
+            fig_customer_type = px.histogram(
+                filtered_df,
+                x='Customer Type',
+                y='Sales Amount',
+                title=' Customer Type vs Sales Amount'
+            )
+            st.plotly_chart(fig_customer_type, use_container_width=True)
+
+    
+        
+# ----------------- EFFECTIVENESS TAB -----------------
 elif selected == "Effectiveness":
     st.subheader("Effectiveness Analysis")
-
+    # Calculate stars out of 5
     def get_star_rating(rating):
         full_stars = int(rating)
         half_star = rating - full_stars >= 0.5
@@ -170,42 +224,41 @@ elif selected == "Effectiveness":
         return stars
 
     filtered_df['Product Rating'] = pd.to_numeric(filtered_df['Product Rating'], errors='coerce').fillna(0)
+
     avg_rating = filtered_df['Product Rating'].mean()
     stars = get_star_rating(avg_rating)
     refund_rate = filtered_df['Refund Amount'].sum()
     avg_response_time = filtered_df['Response Time (days)'].mean()
     demo = filtered_df[filtered_df["Demo Scheduled"] == 'Yes'].shape[0]
-    total_promotion = filtered_df[filtered_df["Promotional Event Participation"] == 'Yes'].shape[0]
+    total_promotion= filtered_df[filtered_df["Promotional Event Participation"]== 'Yes'].shape[0]
     completed = filtered_df[filtered_df['Product Status'] == 'Completed']
     conversion_rate = round((len(completed) / demo) * 100, 2) if demo > 0 else 0
 
-    # Benchmarks or context values for KPIs for comparison
-    benchmark_rating = 4.0
-    benchmark_response = 3.0
-    benchmark_refund = 5000
 
     with st.expander("📌 Effectiveness KPIs", expanded=True):
         kpis_row1 = st.columns(3)
         kpis_row2 = st.columns(3)
-
-        kpis_row1[0].metric("Avg. Product Rating", f"{avg_rating:.2f}  {stars}", delta=f"{avg_rating - benchmark_rating:.2f}")
-        kpis_row1[1].metric("Avg. Response Time (days)", f"{avg_response_time:.2f}", delta=f"{avg_response_time - benchmark_response:.2f}")
-        kpis_row1[2].metric("Total Refund Amount", f"${refund_rate:,.2f}", delta=f"${refund_rate - benchmark_refund:,.2f}")
-
-        kpis_row2[0].metric("Scheduled Demos", value=demo)
+        
+        kpis_row1[0].metric("Avg. Product Rating", f"{avg_rating:.2f}  {stars}")
+        kpis_row1[1].metric("Avg. Response Time (days)", f"{avg_response_time:.2f}")
+        kpis_row1[2].metric("Refund Amount", f"{refund_rate:.2f}")
+        
+        kpis_row2[0].metric("Sheduled demos", value=demo)
         kpis_row2[1].metric("Event Participation", value=total_promotion)
-        kpis_row2[2].metric("Conversion Rate (%)", value=conversion_rate)
+        kpis_row2[2].metric("Conversion rate", value=conversion_rate)
 
-    # --- Product Ratings Distribution ---
+    # --- Product Ratings ---
     with st.expander("⭐ Ratings by Product Performance", expanded=False):
         top_selling = filtered_df["Product Type"].value_counts().nlargest(5).index
+        least_selling = filtered_df["Product Type"].value_counts().nsmallest(5).index
 
-        fig_box = px.box(
+        fig_top = px.box(
             filtered_df[filtered_df["Product Type"].isin(top_selling)],
             x="Product Type", y="Product Rating",
             title="Top-Selling Products: Rating Distribution"
         )
-        st.plotly_chart(fig_box, use_container_width=True)
+        st.plotly_chart(fig_top, use_container_width=True)
+
 
     # --- Refund Distribution ---
     with st.expander("💸 Refund Analysis by Product", expanded=False):
@@ -220,26 +273,73 @@ elif selected == "Effectiveness":
     with st.expander("⏱️ Response Time Analysis", expanded=False):
         fig_hist = px.histogram(
             filtered_df,
-            x="Response Time (days)", nbins=20,
+            x="Response Time (days)", nbins=10,
             title="Distribution of Product Completion Times"
         )
         st.plotly_chart(fig_hist, use_container_width=True)
 
-    # --- Customer Comments Sentiment (basic keywords) ---
-    with st.expander("💬 Customer Comments Sentiment", expanded=False):
-        positive_keywords = ['Excellent', 'Great', 'Loved', 'Fantastic', 'Highly recommend', 'Will buy again']
-        negative_keywords = ['Cancel', 'delay', 'not as described', 'poor']
+    # --- Product Status ---
+    with st.expander("📦 Product Status Overview", expanded=False):
+        status_counts = filtered_df['Product Status'].value_counts().reset_index()
+        status_counts.columns = ['Product Status', 'Count']
+        fig_status = px.bar(
+            status_counts,
+            x='Product Status', y='Count', color='Product Status',
+            title='Product Status Distribution', text='Count'
+        )
+        st.plotly_chart(fig_status, use_container_width=True)
 
-        comments = filtered_df['Comments'].dropna().astype(str)
+    
+# ----------------- ANALYSIS TAB -----------------
+elif selected == "Analysis":
+    st.subheader("🧾 Deeper Data Analysis")
 
-        pos_count = comments.apply(lambda x: any(word.lower() in x.lower() for word in positive_keywords)).sum()
-        neg_count = comments.apply(lambda x: any(word.lower() in x.lower() for word in negative_keywords)).sum()
-        neutral_count = len(comments) - pos_count - neg_count
+    # Combined Aggregated Table by Country and Product Type
+    with st.expander("🌍 Combined Summary: Country vs Product Type", expanded=True):
+        st.write("This table combines country and product type performance across key financial and satisfaction metrics.")
 
-        sentiments = pd.DataFrame({
-            'Sentiment': ['Positive', 'Negative', 'Neutral'],
-            'Count': [pos_count, neg_count, neutral_count]
-        })
+        combined_summary = (
+            filtered_df.groupby(["Country", "Product Type"])[
+                ["Sales Amount", "Cost of Product", "Profit", "Loss", "Response Time (days)", "Product Rating"]
+            ]
+            .agg(['sum', 'mean', 'count'])
+            .round(2)
+        )
 
-        fig_sentiment = px.pie(sentiments, values='Count', names='Sentiment', title='Customer Sentiment Distribution')
-        st.plotly_chart(fig_sentiment, use_container_width=True)
+        # Sort by highest total sales
+        combined_summary = combined_summary.sort_values(('Sales Amount', 'sum'), ascending=False)
+        
+        st.dataframe(combined_summary, use_container_width=True)
+        completed_df =  filtered_df.copy()
+        # Fix Sales Date column only in this slice
+        completed_df['Sales Date'] = pd.to_datetime(completed_df['Sales Date'], errors='coerce')
+        
+        # Now safely create time features
+        completed_df['Month'] = completed_df['Sales Date'].dt.month_name()
+        completed_df['Day'] = completed_df['Sales Date'].dt.date
+        completed_df['Year'] = completed_df['Sales Date'].dt.year
+
+    with st.expander("📈 Time-Based Profit & Loss Summary", expanded=True):
+        st.write("This section shows daily, monthly, and yearly trends of profit and loss.")
+    
+        # Daily
+        daily = completed_df.groupby("Day")[["Profit", "Loss"]].sum().round(2)
+        st.markdown("#### 📆 Daily Profit & Loss")
+        st.dataframe(daily.tail(30), use_container_width=True)  # show last 30 days
+    
+        # Monthly
+        monthly = completed_df.groupby("Month")[["Profit", "Loss"]].sum().round(2)
+        st.markdown("#### 🗓️ Monthly Profit & Loss")
+        st.dataframe(monthly.tail(12), use_container_width=True)
+    
+        # Yearly
+        yearly = completed_df.groupby("Year")[["Profit", "Loss"]].sum().round(2)
+        st.markdown("#### 📅 Yearly Profit & Loss")
+        st.dataframe(yearly, use_container_width=True)
+
+
+
+    # Descriptive Statistics Summary
+    with st.expander("📌 Descriptive Statistics Overview", expanded=False):
+        st.write("This section provides a statistical overview of key numerical metrics in the dataset, including counts, means, and standard deviations.")
+        st.dataframe(filtered_df.describe().round(2), use_container_width=True)
