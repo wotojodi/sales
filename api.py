@@ -319,21 +319,22 @@ elif selected == "Analysis":
 
     with st.expander("📈 Time-Based Profit & Loss Summary", expanded=True):
         st.write("This section shows daily, monthly, and yearly trends of profit and loss.")
-
+    
         # Daily
-        daily =  completed_df("Day")[["Profit", "Loss"]].sum().round(2)
+        daily = completed_df.groupby("Day")[["Profit", "Loss"]].sum().round(2)
         st.markdown("#### 📆 Daily Profit & Loss")
         st.dataframe(daily.tail(30), use_container_width=True)  # show last 30 days
-
+    
         # Monthly
         monthly = completed_df.groupby("Month")[["Profit", "Loss"]].sum().round(2)
         st.markdown("#### 🗓️ Monthly Profit & Loss")
         st.dataframe(monthly.tail(12), use_container_width=True)
-
+    
         # Yearly
-        yearly =  completed_df.groupby("Year")[["Profit", "Loss"]].sum().round(2)
+        yearly = completed_df.groupby("Year")[["Profit", "Loss"]].sum().round(2)
         st.markdown("#### 📅 Yearly Profit & Loss")
         st.dataframe(yearly, use_container_width=True)
+
 
 
     # Descriptive Statistics Summary
