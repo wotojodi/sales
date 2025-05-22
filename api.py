@@ -117,7 +117,9 @@ if selected == "Sales":
     # --- Revenue Over Time ---
     with st.expander("📅 Revenue Trends Over Time", expanded=False):
         completed_df = filtered_df[filtered_df['Product Status'] == 'Completed'].copy()
-        completed_df['Month'] = pd.to_datetime(completed_df['Sales Date']).dt.month_name()
+        # Fix Sales Date column only in this slice
+        completed_df['Sales Date'] = pd.to_datetime(completed_df['Sales Date'], errors='coerce')
+        completed_df['Month'] = completed_df['Sales Date'].dt.month_name()
 
         fig2 = px.bar(
             completed_df.groupby('Month')['Sales Amount'].sum()
@@ -306,13 +308,13 @@ elif selected == "Analysis":
         combined_summary = combined_summary.sort_values(('Sales Amount', 'sum'), ascending=False)
         
         st.dataframe(combined_summary, use_container_width=True)
-    # Ensure Date column is datetime
-    filtered_df["Sales Date"] = pd.to_datetime(filtered_df["Sales Date"])
-
-    # Create time features
-    filtered_df["Day"] = filtered_df["Sales Date"].dt.date
-    filtered_df["Month"] = filtered_df["Sales Date"].dt.month_name()
-    filtered_df["Year"] = filtered_df["Sales Date"].dt.year
+    # Fix Sales Date column only in this slice
+    completed_df['Sales Date'] = pd.to_datetime(completed_df['Sales Date'], errors='coerce')
+    
+    # Now safely create time features
+    completed_df['Month'] = completed_df['Sales Date'].dt.month_name()
+    completed_df['Day'] = completed_df['Sales Date'].dt.date
+    completed_df['Year'] = completed_df['Sales Date'].dt.year
 
     with st.expander("📈 Time-Based Profit & Loss Summary", expanded=True):
         st.write("This section shows daily, monthly, and yearly trends of profit and loss.")
