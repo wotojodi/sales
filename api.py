@@ -311,7 +311,7 @@ elif selected == "Analysis":
 
     # Create time features
     filtered_df["Day"] = filtered_df["Sales Date"].dt.date
-    filtered_df["Month"] = filtered_df["Sales Date"].dt.to_period("M").astype(str)
+    filtered_df["Month"] = filtered_df["Sales Date"].dt.month_name()
     filtered_df["Year"] = filtered_df["Sales Date"].dt.year
 
     with st.expander("📈 Time-Based Profit & Loss Summary", expanded=True):
