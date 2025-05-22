@@ -308,6 +308,7 @@ elif selected == "Analysis":
         combined_summary = combined_summary.sort_values(('Sales Amount', 'sum'), ascending=False)
         
         st.dataframe(combined_summary, use_container_width=True)
+        completed_df =  filtered_df.copy()
         # Fix Sales Date column only in this slice
         completed_df['Sales Date'] = pd.to_datetime(completed_df['Sales Date'], errors='coerce')
         
