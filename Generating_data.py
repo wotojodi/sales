@@ -1,4 +1,4 @@
-from faker import Faker
+ from faker import Faker
 import pandas as pd
 import numpy as np
 import random
@@ -94,7 +94,7 @@ def create_record():
     elif product_status == 'In Progress' or product_status == 'On Hold':
         profit = 0.0
         loss = 0.0
-        product_rating = None
+        product_rating = 0
         comments = ''
     
     elif product_status == 'Cancelled':
