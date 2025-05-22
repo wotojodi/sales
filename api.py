@@ -1,5 +1,3 @@
-# login_dashboard.py
-
 import streamlit as st
 import time
 import json
@@ -11,50 +9,53 @@ from streamlit_option_menu import option_menu
 from streamlit_autorefresh import st_autorefresh
 from Generating_data import create_record
 
-
 # ----------------- CONFIG -----------------
 st.set_page_config(page_title="Sales and Marketing Dashboard", layout="wide")
 
 # ----------------- AUTO REFRESH -----------------
 st_autorefresh(interval=60000, limit=None, key="data_refresh")
 
-# 1. Append ne# 1. Append new record
+# 1. Append new record in a loop
 CSV_PATH = 'AI_Solution_Dataset.csv'
-new_record = create_record()
-new_df = pd.DataFrame([new_record])
 
-# Ensure the file exists and is correctly written before reading
+# Ensure the file exists before reading
 if not os.path.exists(CSV_PATH):
-    new_df.to_csv(CSV_PATH, index=False)
+    # Create a new DataFrame if the file does not exist
+    df = pd.DataFrame(columns=["Customer ID", "Country", "Product Type", "Sales Date", "Sales Amount", "Profit", "Loss", "Subscription Type", "Subscription Price", "Assistance Type", "Product Status", "Product Rating", "Refund Amount", "Response Time (days)", "Demo Scheduled", "Promotional Event Participation"])
+    df.to_csv(CSV_PATH, index=False)
 else:
-    with open(CSV_PATH, 'a', newline='', encoding='utf-8') as f:
-        new_df.to_csv(f, header=False, index=False)
+    df = pd.read_csv(CSV_PATH, on_bad_lines='skip')
+    df.columns = df.columns.str.strip()  # Clean column names
 
-# 2. Load data only once after writing
-def load_data():
-    try:
-        df = pd.read_csv(CSV_PATH, on_bad_lines='skip')
-        df.columns = df.columns.str.strip()  # Clean column names
-        return df
-    except Exception as e:
-        st.error(f"Failed to load data: {e}")
-        st.stop()
+# Function to append new records
+def append_new_record():
+    new_record = create_record()
+    new_df = pd.DataFrame([new_record])
+    new_df.to_csv(CSV_PATH, mode='a', header=False, index=False)
 
-df = load_data()
+# NOTE: Removed infinite loop to avoid blocking Streamlit app; should be done asynchronously in production.
+
+# Load data into session state
+if 'filtered_df' not in st.session_state:
+    st.session_state.filtered_df = df
 
 # ----------------- SIDEBAR FILTERS -----------------
 st.sidebar.header("Filter Options")
-country_filter = st.sidebar.multiselect("Select Country", options=df['Country'].unique())
-product_filter = st.sidebar.multiselect("Select Product", options=df['Product Type'].unique())
-year_filter = st.sidebar.multiselect("Select Year", options=df['Sales Date'].astype(str).str[:4].unique())
+country_filter = st.sidebar.multiselect("Select Country", options=st.session_state.filtered_df['Country'].unique())
+product_filter = st.sidebar.multiselect("Select Product", options=st.session_state.filtered_df['Product Type'].unique())
+year_filter = st.sidebar.multiselect("Select Year", options=st.session_state.filtered_df['Sales Date'].astype(str).str[:4].unique())
 
-filtered_df = df.copy()
+# Apply filters
+filtered_df = st.session_state.filtered_df.copy()
 if country_filter:
     filtered_df = filtered_df[filtered_df['Country'].isin(country_filter)]
 if product_filter:
     filtered_df = filtered_df[filtered_df['Product Type'].isin(product_filter)]
 if year_filter:
     filtered_df = filtered_df[filtered_df['Sales Date'].astype(str).str[:4].isin(year_filter)]
+
+# Update session state with the filtered DataFrame
+st.session_state.filtered_df = filtered_df
 
 # ----------------- NAVIGATION MENU -----------------
 selected = option_menu(
@@ -77,6 +78,7 @@ towrite = BytesIO()
 filtered_df.to_csv(towrite, index=False)
 towrite.seek(0)
 st.download_button("Export to CSV", data=towrite, file_name="Filtered_AI_Data.csv", mime="text/csv")
+
 #-------------------- tabs-----------------
 if selected == "Sales":
     st.title("📈 Sales Performance Dashboard")
@@ -134,7 +136,6 @@ if selected == "Sales":
 
         st.plotly_chart(fig2, use_container_width=True)
 
-
     # --- Product-Level Performance ---
     with st.expander("🏷️ Product Sales Insights", expanded=False):
         # Ensure you're using only completed sales for meaningful sales metrics
@@ -147,7 +148,6 @@ if selected == "Sales":
             least_10 = product_sales.tail(10)
             return top_10, least_10
 
-
         top_products, least_products = get_top_least_products(completed_df)
 
         fig_top = px.bar(
@@ -158,11 +158,10 @@ if selected == "Sales":
         )
         fig_top.update_layout(xaxis_tickangle=-45)
 
-
-        filtered_df = df.sort_values(by='Loss', ascending=False)  # no .head()
+        filtered_sorted_loss = filtered_df.sort_values(by='Loss', ascending=False)  # no .head()
 
         fig_loss = px.bar(
-            filtered_df,
+            filtered_sorted_loss,
             x='Product Type',
             y='Loss',
             title=' Loss by Product Type'
@@ -170,7 +169,6 @@ if selected == "Sales":
 
         st.plotly_chart(fig_top, use_container_width=True)
         st.plotly_chart(fig_loss, use_container_width=True)
-
 
     # --- Country-Level Performance ---
     with st.expander("🌐 Country-Level Sales Breakdown", expanded=False):
@@ -209,8 +207,6 @@ if selected == "Sales":
             )
             st.plotly_chart(fig_customer_type, use_container_width=True)
 
-    
-        
 # ----------------- EFFECTIVENESS TAB -----------------
 elif selected == "Effectiveness":
     st.subheader("Effectiveness Analysis")
@@ -230,20 +226,19 @@ elif selected == "Effectiveness":
     refund_rate = filtered_df['Refund Amount'].sum()
     avg_response_time = filtered_df['Response Time (days)'].mean()
     demo = filtered_df[filtered_df["Demo Scheduled"] == 'Yes'].shape[0]
-    total_promotion= filtered_df[filtered_df["Promotional Event Participation"]== 'Yes'].shape[0]
+    total_promotion = filtered_df[filtered_df["Promotional Event Participation"] == 'Yes'].shape[0]
     completed = filtered_df[filtered_df['Product Status'] == 'Completed']
     conversion_rate = round((len(completed) / demo) * 100, 2) if demo > 0 else 0
-
 
     with st.expander("📌 Effectiveness KPIs", expanded=True):
         kpis_row1 = st.columns(3)
         kpis_row2 = st.columns(3)
-        
+
         kpis_row1[0].metric("Avg. Product Rating", f"{avg_rating:.2f}  {stars}")
         kpis_row1[1].metric("Avg. Response Time (days)", f"{avg_response_time:.2f}")
         kpis_row1[2].metric("Refund Amount", f"{refund_rate:.2f}")
-        
-        kpis_row2[0].metric("Sheduled demos", value=demo)
+
+        kpis_row2[0].metric("Scheduled demos", value=demo)
         kpis_row2[1].metric("Event Participation", value=total_promotion)
         kpis_row2[2].metric("Conversion rate", value=conversion_rate)
 
@@ -258,7 +253,6 @@ elif selected == "Effectiveness":
             title="Top-Selling Products: Rating Distribution"
         )
         st.plotly_chart(fig_top, use_container_width=True)
-
 
     # --- Refund Distribution ---
     with st.expander("💸 Refund Analysis by Product", expanded=False):
@@ -279,7 +273,7 @@ elif selected == "Effectiveness":
         st.plotly_chart(fig_hist, use_container_width=True)
 
     # --- Product Status ---
-    with st.expander("📦 Product Status Overview", expanded=False):
+    with st.expander("📦 Product Status Overview", expanded=True):
         status_counts = filtered_df['Product Status'].value_counts().reset_index()
         status_counts.columns = ['Product Status', 'Count']
         fig_status = px.bar(
@@ -289,57 +283,108 @@ elif selected == "Effectiveness":
         )
         st.plotly_chart(fig_status, use_container_width=True)
 
-    
 # ----------------- ANALYSIS TAB -----------------
 elif selected == "Analysis":
     st.subheader("🧾 Deeper Data Analysis")
 
-    # Combined Aggregated Table by Country and Product Type
-    with st.expander("🌍 Combined Summary: Country vs Product Type", expanded=True):
-        st.write("This table combines country and product type performance across key financial and satisfaction metrics.")
+    # 1. Sales Performance Summary
+    with st.expander("💰 Sales Performance Summary", expanded=True):
+        sales_summary = pd.DataFrame({
+            "Total Sales Amount": [filtered_df["Sales Amount"].sum()],
+            "Total Transactions": [filtered_df["Customer ID"].count()],
+            "Average Sales Amount": [filtered_df["Sales Amount"].mean()],
+            "Total Profit": [filtered_df["Profit"].sum()],
+            "Total Loss": [filtered_df["Loss"].sum()],
+            "Total Refunds": [filtered_df["Refund Amount"].sum()]
+        })
+        st.dataframe(sales_summary, use_container_width=True)
 
-        combined_summary = (
-            filtered_df.groupby(["Country", "Product Type"])[
-                ["Sales Amount", "Cost of Product", "Profit", "Loss", "Response Time (days)", "Product Rating"]
-            ]
-            .agg(['sum', 'mean', 'count'])
-            .round(2)
-        )
+    # 2. Product Performance Summary
+    with st.expander("📦 Product Performance Summary", expanded=True):
+        product_summary = filtered_df.groupby("Product Type").agg({
+            "Sales Amount": "sum",
+            "Profit": "sum",
+            "Customer ID": "count",
+            "Product Rating": "mean"
+        }).rename(columns={"Customer ID": "Total Units Sold"}).reset_index()
 
-        # Sort by highest total sales
-        combined_summary = combined_summary.sort_values(('Sales Amount', 'sum'), ascending=False)
-        
-        st.dataframe(combined_summary, use_container_width=True)
-        completed_df =  filtered_df.copy()
-        # Fix Sales Date column only in this slice
+        st.dataframe(product_summary, use_container_width=True)
+
+    # 3. Customer Insights Summary
+    with st.expander("👥 Customer Insights Summary", expanded=True):
+        customer_summary = filtered_df.groupby("Customer Type").agg({
+            "Customer ID": "count",
+            "Sales Amount": "sum"
+        }).rename(columns={"Customer ID": "Total Customers"}).reset_index()
+
+        total_customers = filtered_df["Customer ID"].nunique()
+        repeat_customers = filtered_df[filtered_df.duplicated(subset=["Customer ID"], keep=False)]["Customer ID"].nunique()
+        retention_rate = (repeat_customers / total_customers) * 100 if total_customers > 0 else 0
+
+        customer_summary["Retention Rate (%)"] = retention_rate
+        st.dataframe(customer_summary, use_container_width=True)
+
+    # 4. Subscription Analysis
+    with st.expander("📊 Subscription Analysis", expanded=True):
+        subscription_summary = filtered_df.groupby("Subscription Type").agg({
+            "Sales Amount": "sum",
+            "Customer ID": "count"
+        }).rename(columns={"Customer ID": "Total Active Subscriptions"}).reset_index()
+
+        churned_customers = filtered_df[filtered_df["Product Status"] == "Cancelled"]["Customer ID"].nunique()
+        total_subscriptions = subscription_summary["Total Active Subscriptions"].sum()
+        churn_rate = (churned_customers / total_subscriptions) * 100 if total_subscriptions > 0 else 0
+
+        subscription_summary["Churn Rate (%)"] = churn_rate
+        st.dataframe(subscription_summary, use_container_width=True)
+
+    # 5. Geographic Performance Summary
+    with st.expander("🌍 Geographic Performance Summary", expanded=True):
+        geographic_summary = filtered_df.groupby("Country").agg({
+            "Sales Amount": "sum",
+            "Customer ID": "count"
+        }).rename(columns={"Customer ID": "Total Transactions"}).reset_index()
+
+        st.dataframe(geographic_summary, use_container_width=True)
+
+    # 6. Promotional Effectiveness
+    with st.expander("🎉 Promotional Effectiveness", expanded=True):
+        promo_summary = filtered_df[filtered_df["Promotional Event Participation"] == "Yes"].groupby("Promotional Event").agg({
+            "Sales Amount": "sum",
+            "Customer ID": "count"
+        }).rename(columns={"Customer ID": "Total Transactions"}).reset_index()
+
+        st.dataframe(promo_summary, use_container_width=True)
+
+    # 7. Product Status Overview (Added as important for sales team)
+    with st.expander("📦 Product Status Overview", expanded=True):
+        status_counts = filtered_df['Product Status'].value_counts().reset_index()
+        status_counts.columns = ['Product Status', 'Count']
+        st.dataframe(status_counts, use_container_width=True)
+
+    # 8. Timely Sales Analysis: Daily, Monthly, Yearly Sales
+    with st.expander("⏰ Timely Sales Analysis", expanded=True):
+        completed_df = filtered_df[filtered_df['Product Status'] == 'Completed'].copy()
         completed_df['Sales Date'] = pd.to_datetime(completed_df['Sales Date'], errors='coerce')
-        
-        # Now safely create time features
-        completed_df['Month'] = completed_df['Sales Date'].dt.month_name()
         completed_df['Day'] = completed_df['Sales Date'].dt.date
+        completed_df['Month'] = completed_df['Sales Date'].dt.to_period('M').dt.to_timestamp()
         completed_df['Year'] = completed_df['Sales Date'].dt.year
 
-    with st.expander("📈 Time-Based Profit & Loss Summary", expanded=True):
-        st.write("This section shows daily, monthly, and yearly trends of profit and loss.")
-    
-        # Daily
-        daily = completed_df.groupby("Day")[["Profit", "Loss"]].sum().round(2)
-        st.markdown("#### 📆 Daily Profit & Loss")
-        st.dataframe(daily.tail(30), use_container_width=True)  # show last 30 days
-    
-        # Monthly
-        monthly = completed_df.groupby("Month")[["Profit", "Loss"]].sum().round(2)
-        st.markdown("#### 🗓️ Monthly Profit & Loss")
-        st.dataframe(monthly.tail(12), use_container_width=True)
-    
-        # Yearly
-        yearly = completed_df.groupby("Year")[["Profit", "Loss"]].sum().round(2)
-        st.markdown("#### 📅 Yearly Profit & Loss")
-        st.dataframe(yearly, use_container_width=True)
+        daily_sales = completed_df.groupby('Day')['Sales Amount'].sum().reset_index()
+        monthly_sales = completed_df.groupby('Month')['Sales Amount'].sum().reset_index()
+        yearly_sales = completed_df.groupby('Year')['Sales Amount'].sum().reset_index()
 
+        st.markdown("### Daily Sales")
+        st.line_chart(daily_sales.rename(columns={"Day": "index"}).set_index("index")['Sales Amount'])
 
+        st.markdown("### Monthly Sales")
+        st.line_chart(monthly_sales.rename(columns={"Month": "index"}).set_index("index")['Sales Amount'])
+
+        st.markdown("### Yearly Sales")
+        st.line_chart(yearly_sales.rename(columns={"Year": "index"}).set_index("index")['Sales Amount'])
 
     # Descriptive Statistics Summary
     with st.expander("📌 Descriptive Statistics Overview", expanded=False):
         st.write("This section provides a statistical overview of key numerical metrics in the dataset, including counts, means, and standard deviations.")
         st.dataframe(filtered_df.describe().round(2), use_container_width=True)
+
