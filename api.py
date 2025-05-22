@@ -223,7 +223,7 @@ elif selected == "Effectiveness":
             stars += "✬"
         return stars
 
-    filtered_df['Product Rating'] = pd.to_numeric(filtered_df['Rating'], errors='coerce').fillna(0)
+    filtered_df['Product Rating'] = pd.to_numeric(filtered_df['Product Rating'], errors='coerce').fillna(0)
 
     avg_rating = filtered_df['Product Rating'].mean()
     stars = get_star_rating(avg_rating)
