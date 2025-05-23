@@ -103,9 +103,11 @@ if selected == "Sales":
     kpi_row2[1].metric(label=" Countries Reached", value=total_countries)
     kpi_row2[2].metric(label=" Total Job Requests", value=total_job_request)
 
-    kpi_row3 = st.columns(2)
+    kpi_row3 = st.columns(3)
     kpi_row3[0].metric(label=" AI Assistant Requests", value=AI_assistant)
     kpi_row3[1].metric(label="Sales Rep Requests", value=sales_rep)
+    kpi_row3[2].metric(label="Top Selling Product", value=top_selling)
+
 
     kpi_row4 = st.columns(2)
     kpi_row4[0].metric(label=" Total Subscribers", value=subscribers)
