@@ -103,10 +103,9 @@ if selected == "Sales":
     kpi_row2[1].metric(label=" Countries Reached", value=total_countries)
     kpi_row2[2].metric(label=" Total Job Requests", value=total_job_request)
 
-    kpi_row3 = st.columns(3)
+    kpi_row3 = st.columns(2)
     kpi_row3[0].metric(label=" AI Assistant Requests", value=AI_assistant)
     kpi_row3[1].metric(label="Sales Rep Requests", value=sales_rep)
-    kpi_row3[2].metric(label="Top Selling Product", value=top_selling)
 
     kpi_row4 = st.columns(2)
     kpi_row4[0].metric(label=" Total Subscribers", value=subscribers)
@@ -304,6 +303,7 @@ elif selected == "Analysis":
             "Product Rating": "mean"
         }).rename(columns={"Customer ID": "Total Units Sold"}).reset_index()
 
+        product_summary = product_summary.sort_values(by="Sales Amount", ascending=False)
         st.dataframe(product_summary, use_container_width=True)
 
     # 3. Customer Insights Summary
@@ -341,6 +341,7 @@ elif selected == "Analysis":
             "Customer ID": "count"
         }).rename(columns={"Customer ID": "Total Transactions"}).reset_index()
 
+        geographic_summary = geographic_summary.sort_values(by="Sales Amount", ascending=False)
         st.dataframe(geographic_summary, use_container_width=True)
 
     # 6. Promotional Effectiveness
