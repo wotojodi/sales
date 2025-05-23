@@ -15,47 +15,43 @@ st.set_page_config(page_title="Sales and Marketing Dashboard", layout="wide")
 # ----------------- AUTO REFRESH -----------------
 st_autorefresh(interval=60000, limit=None, key="data_refresh")
 
-# 1. Append new record in a loop
+# 1. Append ne# 1. Append new record
 CSV_PATH = 'AI_Solution_Dataset.csv'
+new_record = create_record()
+new_df = pd.DataFrame([new_record])
 
-# Ensure the file exists before reading
+# Ensure the file exists and is correctly written before reading
 if not os.path.exists(CSV_PATH):
-    # Create a new DataFrame if the file does not exist
-    df = pd.DataFrame(columns=["Customer ID", "Country", "Product Type", "Sales Date", "Sales Amount", "Profit", "Loss", "Subscription Type", "Subscription Price", "Assistance Type", "Product Status", "Product Rating", "Refund Amount", "Response Time (days)", "Demo Scheduled", "Promotional Event Participation"])
-    df.to_csv(CSV_PATH, index=False)
+    new_df.to_csv(CSV_PATH, index=False)
 else:
-    df = pd.read_csv(CSV_PATH, on_bad_lines='skip')
-    df.columns = df.columns.str.strip()  # Clean column names
+    with open(CSV_PATH, 'a', newline='', encoding='utf-8') as f:
+        new_df.to_csv(f, header=False, index=False)
 
-# Function to append new records
-def append_new_record():
-    new_record = create_record()
-    new_df = pd.DataFrame([new_record])
-    new_df.to_csv(CSV_PATH, mode='a', header=False, index=False)
+# 2. Load data only once after writing
+def load_data():
+    try:
+        df = pd.read_csv(CSV_PATH, on_bad_lines='skip')
+        df.columns = df.columns.str.strip()  # Clean column names
+        return df
+    except Exception as e:
+        st.error(f"Failed to load data: {e}")
+        st.stop()
 
-# NOTE: Removed infinite loop to avoid blocking Streamlit app; should be done asynchronously in production.
-
-# Load data into session state
-if 'filtered_df' not in st.session_state:
-    st.session_state.filtered_df = df
+df = load_data()
 
 # ----------------- SIDEBAR FILTERS -----------------
 st.sidebar.header("Filter Options")
-country_filter = st.sidebar.multiselect("Select Country", options=st.session_state.filtered_df['Country'].unique())
-product_filter = st.sidebar.multiselect("Select Product", options=st.session_state.filtered_df['Product Type'].unique())
-year_filter = st.sidebar.multiselect("Select Year", options=st.session_state.filtered_df['Sales Date'].astype(str).str[:4].unique())
+country_filter = st.sidebar.multiselect("Select Country", options=df['Country'].unique())
+product_filter = st.sidebar.multiselect("Select Product", options=df['Product Type'].unique())
+year_filter = st.sidebar.multiselect("Select Year", options=df['Sales Date'].astype(str).str[:4].unique())
 
-# Apply filters
-filtered_df = st.session_state.filtered_df.copy()
+filtered_df = df.copy()
 if country_filter:
     filtered_df = filtered_df[filtered_df['Country'].isin(country_filter)]
 if product_filter:
     filtered_df = filtered_df[filtered_df['Product Type'].isin(product_filter)]
 if year_filter:
     filtered_df = filtered_df[filtered_df['Sales Date'].astype(str).str[:4].isin(year_filter)]
-
-# Update session state with the filtered DataFrame
-st.session_state.filtered_df = filtered_df
 
 # ----------------- NAVIGATION MENU -----------------
 selected = option_menu(
